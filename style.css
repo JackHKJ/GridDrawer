@@ -1,0 +1,58 @@
+body{
+    margin: 0;
+    background-color: rgb(231, 231, 231);
+}
+
+.grid_container{
+    display: flex;
+    align-items: center;
+}
+
+#grid_section{
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    margin: auto 20;
+    align-items: center;
+}
+
+
+.grid_cell{
+    margin:4px 0 0 4px;
+    background-color: white;
+    border: 4px white solid;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    font-size: 35px;
+}
+
+.grid_line{
+    display: flex;
+}
+
+.grid_cell_modifier_right{
+    margin-right: 4px;
+}
+
+.grid_cell_modifier_down{
+    margin-bottom: 4px;
+}
+
+.clear_cell{
+    /* margin: 4px 0 0 4px; */
+    background-color: white;
+    border: 4px white solid;
+    height: 54px;
+    width: 54px;
+    text-align: center;
+    font-size: 35px;
+}
+
+.clear_cell_modifier_width{
+    width: 58px;
+}
+
+.clear_cell_modifier_height{
+    height: 58px;
+}
