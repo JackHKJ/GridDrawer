@@ -22,13 +22,26 @@
         <!-- The modifier part -->   
         <div class="modifiers">
             <p>Selected: <span id="selected_name"></span></p>
-            <p>Border: 
-            <select id="selected_border_color">
-                <option value="white">white</option>
-                <option value="red">red</option>
-                <option value="green">green</option>
-                <option value="yellow">yellow</option>
-            </select></p>
+            <p>
+                Border: 
+                <select id="selected_border_color">
+                    <option value="white">white</option>
+                    <option value="red">red</option>
+                    <option value="lime">green</option>
+                    <option value="yellow">yellow</option>
+                    <option value="royalblue">blue</option>
+                    <option value="black">black</option>
+                </select>
+                Background: 
+                <select id="selected_bg_color">
+                    <option value="white">white</option>
+                    <option value="red">red</option>
+                    <option value="lime">green</option>
+                    <option value="yellow">yellow</option>
+                    <option value="royalblue">blue</option>
+                    <option value="black">black</option>
+                </select></p>
+            </p>
             <p>Text: <input type="text" id="selected_text"></p>
             <input type="button" value="Modify!" id="modify_btn" onclick="modify_selected()">
         </div>

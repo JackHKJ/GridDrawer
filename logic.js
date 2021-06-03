@@ -2,8 +2,18 @@ var selected_element = null
 var border_color = {
     white: "white",
     red: "red",
-    green: "green",
+    green: "lime",
     yellow: "yellow",
+    blue: "royalblue",
+    black: "black"
+}
+var bg_color = {
+    white: "white",
+    red: "red",
+    green: "lime",
+    yellow: "yellow",
+    blue: "royalblue",
+    black: "black"
 }
 
 
@@ -24,6 +34,7 @@ function create_grid(){
             this_element.setAttribute("name",i+'-'+j)
             this_element.setAttribute('onclick', 'select(this)')
             this_element.setAttribute('border_color', border_color.white)
+            this_element.setAttribute('background_color', bg_color.white)
 
             if(i==0||i==size+1||j==0||j==size+1){
                 this_element.className="clear_cell"
@@ -66,6 +77,14 @@ function select(e){
       if (option.value === selected_element.getAttribute("border_color")) sel.selectedIndex = i;
     });
 
+    sel = document.getElementById("selected_bg_color")
+    var options = Array.from(sel.options);
+    console.log(options)
+    options.forEach((option, i) => {
+        console.log(option,i)
+      if (option.value === selected_element.getAttribute("background_color")) sel.selectedIndex = i;
+    });
+
 
 
     document.getElementById("selected_text").value = e.innerText
@@ -76,14 +95,13 @@ function modify_selected(e){
         return
     }
     selected_element.innerText = document.getElementById("selected_text").value
+
     selected_element.setAttribute("border_color", document.getElementById("selected_border_color").value)
     color_value = document.getElementById("selected_border_color").value + " solid 4px"    
     selected_element.style.border = color_value 
 
-    // sel = document.getElementById("selected_border_color")
-    // var options = Array.from(sel.options);
-    // selected_element.getAttribute("border_color") = options[document.getElementById("selected_border_color").selectedIndex].value
-    // selected_element.style.border_color = "green"
-
+    selected_element.setAttribute("background_color", document.getElementById("selected_bg_color").value)
+    color_value = document.getElementById("selected_bg_color").value
+    selected_element.style.background = color_value 
 
 }
