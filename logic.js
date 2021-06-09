@@ -1,7 +1,7 @@
 // This variable records the current selected parameter
 var selected_element = null
 // This are the available color list for the designed elements
-var border_color = {
+var COLOR_LIBRARY = {
     white: "white",
     red: "red",
     green: "lime",
@@ -9,14 +9,8 @@ var border_color = {
     blue: "royalblue",
     black: "black"
 }
-var bg_color = {
-    white: "white",
-    red: "red",
-    green: "lime",
-    yellow: "yellow",
-    blue: "royalblue",
-    black: "black"
-}
+
+var DARK_COLORS = ["black","royalblue","red"]
 
 // This is the default function for creating the grid
 function create_grid(){
@@ -41,8 +35,8 @@ function create_grid(){
             this_element.addEventListener('wheel',scroll_handler)
 
 
-            this_element.setAttribute('border_color', border_color.white)
-            this_element.setAttribute('background_color', bg_color.white)
+            this_element.setAttribute('COLOR_LIBRARY', COLOR_LIBRARY.white)
+            this_element.setAttribute('background_color', COLOR_LIBRARY.white)
 
             if(i==0||i==size+1||j==0||j==size+1){
                 this_element.className="clear_cell"
@@ -83,7 +77,7 @@ function select(e){
     // console.log(options)
     options.forEach((option, i) => {
         // console.log(option,i)
-      if (option.value === selected_element.getAttribute("border_color")) sel.selectedIndex = i;
+      if (option.value === selected_element.getAttribute("COLOR_LIBRARY")) sel.selectedIndex = i;
     });
 
     sel = document.getElementById("selected_bg_color")
@@ -105,19 +99,26 @@ function modify_selected(e){
     if(selected_element == null){
         return
     }
+    // Update the text value 
     selected_element.innerText = document.getElementById("selected_text").value
-
-    selected_element.setAttribute("border_color", document.getElementById("selected_border_color").value)
+    // Update the border color
+    selected_element.setAttribute("COLOR_LIBRARY", document.getElementById("selected_border_color").value)
     color_value = document.getElementById("selected_border_color").value + " solid 4px"    
     selected_element.style.border = color_value 
-
+    // Update the background color
     selected_element.setAttribute("background_color", document.getElementById("selected_bg_color").value)
     color_value = document.getElementById("selected_bg_color").value
     selected_element.style.background = color_value 
-
+    // Adjust the font color if the color value is black
+    if(DARK_COLORS.includes(color_value)){
+        selected_element.style.color = COLOR_LIBRARY.white
+    }
+    else{
+        selected_element.style.color = COLOR_LIBRARY.black
+    }
 }
 
-// This function is used to modify the selected cell, which will clear all the border/bg_color on it
+// This function is used to modify the selected cell, which will clear all the border/COLOR_LIBRARY on it
 function clear(e){
     e.preventDefault()
     // console.log("rk")
@@ -125,8 +126,8 @@ function clear(e){
     var target_element = e.target
     // console.log(target_element)
     select(target_element)
-    document.getElementById("selected_border_color").value = border_color.white
-    document.getElementById("selected_bg_color").value = bg_color.white
+    document.getElementById("selected_border_color").value = COLOR_LIBRARY.white
+    document.getElementById("selected_bg_color").value = COLOR_LIBRARY.white
     modify_selected(target_element)
 }
 
@@ -144,8 +145,8 @@ function scroll_handler(e){
     if(delta < 0){
         // DeltaY < 0: Scroll on top
         let flag = false
-        document.getElementById("selected_bg_color").value = Object.entries(bg_color)[0][0]
-        for(const [key, value] of Object.entries(bg_color)){
+        document.getElementById("selected_bg_color").value = Object.entries(COLOR_LIBRARY)[0][0]
+        for(const [key, value] of Object.entries(COLOR_LIBRARY)){
 
             if(!flag && value == selected_element.getAttribute("background_color")){
                 flag = true
@@ -161,10 +162,10 @@ function scroll_handler(e){
     else{
         // DeltaY > 0: Scroll to bottom
         let flag = false
-        document.getElementById("selected_border_color").value = Object.entries(bg_color)[0][0]
-        for(const [key, value] of Object.entries(border_color)){
+        document.getElementById("selected_border_color").value = Object.entries(COLOR_LIBRARY)[0][0]
+        for(const [key, value] of Object.entries(COLOR_LIBRARY)){
 
-            if(!flag && value == selected_element.getAttribute("border_color")){
+            if(!flag && value == selected_element.getAttribute("COLOR_LIBRARY")){
                 flag = true
                 continue
             }          
