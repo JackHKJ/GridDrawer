@@ -4,8 +4,17 @@
         <!-- author: Kejie Jack He -->
         <link href="style.css" rel="stylesheet">
         <script src="logic.js"></script>
+        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+        <script>
+            const download = () => {
+               html2canvas(document.querySelector('#grid_section')).then(canvas => {
+                //   document.body.appendChild(canvas);
+                canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({'image/png': blob})]));
+               });
+            }
+         </script>
     </head>
-    <body onscroll="scroll_handler(this)">
+    <body>
         <!-- The title section -->
         <h1>This is a grid drawing tool</h1>
         <!-- Setter for the width of the grid -->
@@ -44,6 +53,7 @@
             </p>
             <p>Text: <input type="text" id="selected_text" onfocus="this.select()"></p>
             <input type="button" value="Modify!" id="modify_btn" onclick="modify_selected()">
+            <input type="button" value="ScreenShot!" id="screenshot_btn" onclick="download()">
         </div>
     </body>
 </html>

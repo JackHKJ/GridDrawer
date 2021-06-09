@@ -175,7 +175,6 @@ function scroll_handler(e){
             }
         }
     }
-
     modify_selected(target_element)
 }
 
