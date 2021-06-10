@@ -1,3 +1,5 @@
+
+
 body{
     margin: 0;
     background-color: rgb(231, 231, 231);
@@ -11,7 +13,7 @@ body{
 #grid_section{
     display: flex;
     flex-direction: column;
-    background-color: black;
+    background-color: rgb(175, 175, 175);
     margin: auto 20;
     align-items: center;
 }
@@ -20,11 +22,12 @@ body{
 .grid_cell{
     margin:4px 0 0 4px;
     background-color: white;
-    border: 4px white solid;
-    height: 50px;
-    width: 50px;
+    border: 2px rgb(200, 200, 200) solid;
+    box-shadow: inset 2px white;
+    height: 60px;
+    width: 60px;
     text-align: center;
-    font-size: 35px;
+    font-size: 42px;
 }
 
 .grid_line{
@@ -42,17 +45,17 @@ body{
 .clear_cell{
     /* margin: 4px 0 0 4px; */
     background-color: white;
-    border: 4px white solid;
-    height: 54px;
-    width: 54px;
+    border: 1px white solid;
+    height: 66px;
+    width: 66px;
     text-align: center;
     font-size: 35px;
 }
 
 .clear_cell_modifier_width{
-    width: 58px;
+    width: 70px;
 }
 
 .clear_cell_modifier_height{
-    height: 58px;
+    height: 70px;
 }
