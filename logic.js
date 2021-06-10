@@ -26,13 +26,18 @@ function create_grid(){
     console.log("Creating a new grid")
     // Get the size
     var size = parseInt(document.getElementById("grid_size_input").value)   
+    var size_sup = parseInt(document.getElementById("grid_size_input_support").value)   
+    console.log(size_sup)
+    if (size_sup == parseInt("NaN")){
+        size_sup = size
+    }
     var grid = document.getElementById("grid_section")
     grid.innerHTML = "" // clean the current part
     
     for (let i = 0; i < size+2; i++) {
         var this_line = document.createElement('div')
         this_line.className = "grid_line"
-        for (let j = 0; j < size+2; j++) {          
+        for (let j = 0; j < size_sup+2; j++) {          
 
             var this_element = document.createElement("div")
             this_element.setAttribute("name",i+'-'+j)
@@ -47,19 +52,19 @@ function create_grid(){
             this_element.setAttribute('background_color', COLOR_LIBRARY.white)
             this_element.setAttribute('thick_border','0000') //[top, right][bottom left]
 
-            if(i==0||i==size+1||j==0||j==size+1){
+            if(i==0||i==size+1||j==0||j==size_sup+1){
                 this_element.className="clear_cell"
-                if ((i,j)in[(0,0),(size+1,size+1)]){
+                if ((i,j)in[(0,0),(size+1,size_sup+1)]){
                     this_element.classList.add("clear_cell_modifier_width")
                 }
-                if ((i==size & j==0)||(i==size & j==size+1)){
+                if ((i==size & j==0)||(i==size & j==size_sup+1)){
                     this_element.classList.add("clear_cell_modifier_height")
                 }
                 
             }
             else{
                 this_element.className="grid_cell"
-                if (j==size){
+                if (j==size_sup){
                     this_element.classList.add("grid_cell_modifier_right")
                 }
                 if(i==size){
@@ -192,8 +197,8 @@ function scroll_handler(e){
         let current_thick_status = target_element.getAttribute('thick_border')
         TR = current_thick_status[0]+current_thick_status[1]
         BL = current_thick_status[2]+current_thick_status[3]
-        console.log(TR)
-        console.log(BL)
+        // console.log(TR)
+        // console.log(BL)
         // Modify [top right]
         if(delta < 0){
           let index = THICK_LIST.indexOf(TR)
@@ -207,7 +212,7 @@ function scroll_handler(e){
             BL = THICK_LIST[index]
         }
         current_thick_status = TR+BL
-        console.log(current_thick_status)
+        // console.log(current_thick_status)
         thick_border_modifier(target_element, current_thick_status)
         target_element.setAttribute('thick_border', current_thick_status)
     }
