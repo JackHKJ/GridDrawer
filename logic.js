@@ -6,6 +6,7 @@ var MODE_DICT = {
     border:"border",
     image:"image"
 }
+// The default mode is 'content'
 var CURRENT_MODE = MODE_DICT.content
 // This is used for the thick_border value iteration
 var THICK_LIST = ['00','10','11','01']
@@ -22,7 +23,6 @@ var COLOR_LIBRARY = {
 var DARK_COLORS = ["black","royalblue","red"]
 // This is the default list for storing the src for the icons
 var ICON_SRC_LIST = ['url("$NONE$")']
-
 
 
 // This is the default function for creating the grid
@@ -145,17 +145,17 @@ function modify_selected(e){
 // This function is used to modify the selected cell, which will clear all the border/COLOR_LIBRARY on it
 function clear(e){
     e.preventDefault()
-    if(CURRENT_MODE ==MODE_DICT.content){
-        // console.log("rk")
-        // console.log(e)
-        var target_element = e.target
-        // console.log(target_element)
-        select(target_element)
-        document.getElementById("selected_border_color").value = COLOR_LIBRARY.white
-        document.getElementById("selected_bg_color").value = COLOR_LIBRARY.white
-        modify_selected(target_element)
-        return
-    }   
+    // console.log("rk")
+    // console.log(e)
+    var target_element = e.target
+    // console.log(target_element)
+    select(target_element)
+    document.getElementById("selected_border_color").value = COLOR_LIBRARY.white
+    // Only clear the background when in content mode
+    if(CURRENT_MODE ==MODE_DICT.content){       
+        document.getElementById("selected_bg_color").value = COLOR_LIBRARY.white        
+    }
+    modify_selected(target_element)   
 }    
     
 
@@ -285,29 +285,20 @@ function scroll_handler(e){
     
 }
 
+// Function that iteratively switch the mode 
+// Mode: content/border/image
 function change_mode(e){
-
     let mode_list = Object.keys(MODE_DICT)
     let index = mode_list.indexOf(CURRENT_MODE)
     index = (index + 1) % mode_list.length    
     CURRENT_MODE = MODE_DICT[mode_list[index]]
     document.getElementById("mode_name").textContent = MODE_DICT[mode_list[index]]
-
-
-
-    // if(CURRENT_MODE == MODE_DICT.content){
-    //     CURRENT_MODE = MODE_DICT.border
-    //     document.getElementById("mode_name").textContent = MODE_DICT.border
-    // }
-    // else{
-    //     CURRENT_MODE = MODE_DICT.content
-    //     document.getElementById("mode_name").textContent = MODE_DICT.content
-    // }
 }
 
+// Data segment for modifying the 'border' around the cells
 var BORDER_NORMAL = '2px rgb(200, 200, 200) solid'
 var BORDER_THICK =  "2px black solid"
-
+// Modifier function that adjust the border based on the attributes
 function thick_border_modifier(target, status){
     if(status[0] === "1"){
         target.style.borderTop = BORDER_THICK
@@ -335,8 +326,7 @@ function thick_border_modifier(target, status){
     }
 }
 
-
-
+// This function is used to upload the image for icons
 function upload(){
     var input = document.getElementById("img")
     if (input.files && input.files[0]) {
@@ -352,6 +342,10 @@ function upload(){
             // element.style.backgroundImage = result_src
         };
         reader.readAsDataURL(input.files[0]);
+        let message = input.value
+        message = message.slice(message.lastIndexOf("\\")+1)        
+        document.getElementById("console").textContent = message + " uploaded!"
     }
+    
     // console.log(ICON_SRC_LIST)
 }
