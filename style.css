@@ -13,7 +13,8 @@ body{
 #grid_section{
     display: flex;
     flex-direction: column;
-    background-color: rgb(175, 175, 175);
+    /* background-color: rgb(175, 175, 175); */
+    background-color: black;
     margin: auto 20;
     align-items: center;
 }
@@ -23,6 +24,7 @@ body{
     margin:4px 0 0 4px;
     background-color: white;
     border: 2px rgb(200, 200, 200) solid;
+    /* border: 2px solid white; */
     box-shadow: inset 2px white;
     height: 60px;
     width: 60px;
@@ -49,7 +51,7 @@ body{
     height: 66px;
     width: 66px;
     text-align: center;
-    font-size: 35px;
+    font-size: 42px;
 }
 
 .clear_cell_modifier_width{
