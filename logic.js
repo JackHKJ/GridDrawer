@@ -212,6 +212,10 @@ function scroll_handler(e){
     }
     // Under border mode, modify the thick_border iteratively
     if (CURRENT_MODE == MODE_DICT.border){
+        // border mode will not modify the clear cell
+        if (target_element.classList.contains("clear_cell")){
+            return
+        }
         let current_thick_status = target_element.getAttribute('thick_border')
         TR = current_thick_status[0]+current_thick_status[1]
         BL = current_thick_status[2]+current_thick_status[3]
