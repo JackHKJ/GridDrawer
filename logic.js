@@ -17,7 +17,8 @@ var COLOR_LIBRARY = {
     green: "lime",
     yellow: "yellow",
     blue: "royalblue",
-    black: "black"
+    black: "rgb(60, 60, 60)",
+    gray:"rgb(170, 170, 170)"
 }
 // These are the colors that needs white font color
 var DARK_COLORS = ["black","royalblue","red"]
@@ -82,9 +83,20 @@ function create_grid(){
             this_element.innerText=''
             this_line.appendChild(this_element)
         }
-        grid.appendChild(this_line)
-        
+        grid.appendChild(this_line)        
     }
+    // End of creating the grid
+    // Add the color library to the dropdown list
+    var color_id = ['selected_border_color','selected_bg_color']
+    for(var this_id of color_id){
+        var this_element = document.getElementById(this_id)
+        this_element.innerHTML = ''
+        for(const [key, value] of Object.entries(COLOR_LIBRARY)){
+            this_element.innerHTML += '<option value="'+ value +'">'+ key +'</option>'
+        }
+    }
+
+
 }
 
 // This function will be called when a grid-cell is clicked (Select)
