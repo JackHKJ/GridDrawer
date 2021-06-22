@@ -15,19 +15,39 @@ var COLOR_LIBRARY = {
     white: "white",
     red: "red",
     green: "lime",
-    yellow: "yellow",
-    blue: "royalblue",
+    gray:"rgb(170, 170, 170)",
     black: "rgb(60, 60, 60)",
-    gray:"rgb(170, 170, 170)"
+    yellow: "yellow",
+    blue: "royalblue" 
 }
+
+// Automatically create a reverse map for the color library        
+var REV_COLOR_LIBRARY = {}
+for(var propName in COLOR_LIBRARY)
+{
+    var this_tag = COLOR_LIBRARY[propName]    
+    REV_COLOR_LIBRARY[this_tag]=propName
+}
+console.log(REV_COLOR_LIBRARY)
+
+
 // These are the colors that needs white font color
-var DARK_COLORS = ["black","royalblue","red"]
+var DARK_COLORS = ["black","royalblue","red","rgb(60, 60, 60)","rgb(170, 170, 170)"]
 // This is the default list for storing the src for the icons
 var ICON_SRC_LIST = ['url("$NONE$")']
+// The default color used when generating the grid
+var DEFAULT_BACKGROUD = COLOR_LIBRARY.white
 
 
 // This is the default function for creating the grid
 function create_grid(){
+
+    // Check the user selection of the default backgroun when selected
+    console.log(document.getElementById('selected_default_background').value)
+    let selected_default_bg = REV_COLOR_LIBRARY[document.getElementById('selected_default_background').value]
+
+
+
     // Create a grid of the given size
     // console.log("Creating a new grid")
     CURRENT_MODE = MODE_DICT.content
@@ -43,7 +63,7 @@ function create_grid(){
     for (let i = 0; i < size+2; i++) {
         var this_line = document.createElement('div')
         this_line.className = "grid_line"
-        for (let j = 0; j < size_sup+2; j++) {          
+        for (let j = 0; j < size_sup + 2; j++) {          
 
             var this_element = document.createElement("div")
             this_element.setAttribute("name",i+'-'+j)
@@ -54,8 +74,13 @@ function create_grid(){
             this_element.addEventListener('wheel',scroll_handler)
             
 
-            this_element.setAttribute('border_color', COLOR_LIBRARY.white)
-            this_element.setAttribute('background_color', COLOR_LIBRARY.white)
+            // this_element.setAttribute('border_color', COLOR_LIBRARY.white)
+            this_element.setAttribute('border_color', COLOR_LIBRARY[selected_default_bg])
+            // Modify the background when selected
+            // this_element.setAttribute('background_color', COLOR_LIBRARY.white
+            this_element.setAttribute('background_color', COLOR_LIBRARY[selected_default_bg])
+
+
             this_element.setAttribute('thick_border','0000') //[top, right][bottom left]
             // this_element.style.backgroundImage = ICON_SRC_LIST[0]
             this_element.setAttribute('background_index',0)
@@ -78,9 +103,14 @@ function create_grid(){
                 if(i==size){
                     this_element.classList.add("grid_cell_modifier_down")
                 }
+                this_element.style.boxShadow = COLOR_LIBRARY[selected_default_bg] 
+                this_element.style.background = COLOR_LIBRARY[selected_default_bg]
             }
                              
             this_element.innerText=''
+
+            
+
             this_line.appendChild(this_element)
         }
         grid.appendChild(this_line)        
@@ -162,10 +192,12 @@ function clear(e){
     var target_element = e.target
     // console.log(target_element)
     select(target_element)
-    document.getElementById("selected_border_color").value = COLOR_LIBRARY.white
+    // document.getElementById("selected_border_color").value = COLOR_LIBRARY.white
+    document.getElementById("selected_border_color").value = document.getElementById('selected_default_background').value 
     // Only clear the background when in content mode
     if(CURRENT_MODE ==MODE_DICT.content){       
-        document.getElementById("selected_bg_color").value = COLOR_LIBRARY.white        
+        // document.getElementById("selected_bg_color").value = COLOR_LIBRARY.white  
+        document.getElementById("selected_bg_color").value = document.getElementById('selected_default_background').value      
     }
     modify_selected(target_element)   
 }    
@@ -365,3 +397,19 @@ function upload(){
     
     // console.log(ICON_SRC_LIST)
 }
+
+
+function set_default_bg(){
+    var this_element = document.getElementById('selected_default_background')
+        this_element.innerHTML = ''
+        for(const [key, value] of Object.entries(COLOR_LIBRARY)){
+            this_element.innerHTML += '<option value="'+ value +'">'+ key +'</option>'
+        }
+}
+
+
+// Functions that is activated after page load
+
+window.addEventListener('load', function () {
+    set_default_bg()
+  })
