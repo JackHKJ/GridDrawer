@@ -74,11 +74,11 @@ function create_grid(){
             this_element.addEventListener('wheel',scroll_handler)
             
 
-            // this_element.setAttribute('border_color', COLOR_LIBRARY.white)
-            this_element.setAttribute('border_color', COLOR_LIBRARY[selected_default_bg])
+            this_element.setAttribute('border_color', COLOR_LIBRARY.white)
+            // this_element.setAttribute('border_color', COLOR_LIBRARY[selected_default_bg])
             // Modify the background when selected
-            // this_element.setAttribute('background_color', COLOR_LIBRARY.white
-            this_element.setAttribute('background_color', COLOR_LIBRARY[selected_default_bg])
+            this_element.setAttribute('background_color', COLOR_LIBRARY.white)
+            // this_element.setAttribute('background_color', COLOR_LIBRARY[selected_default_bg])
 
 
             this_element.setAttribute('thick_border','0000') //[top, right][bottom left]
@@ -105,6 +105,9 @@ function create_grid(){
                 }
                 this_element.style.boxShadow = COLOR_LIBRARY[selected_default_bg] 
                 this_element.style.background = COLOR_LIBRARY[selected_default_bg]
+                
+                this_element.setAttribute('border_color', COLOR_LIBRARY[selected_default_bg])
+                this_element.setAttribute('background_color', COLOR_LIBRARY[selected_default_bg])
             }
                              
             this_element.innerText=''
