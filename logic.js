@@ -28,7 +28,7 @@ for(var propName in COLOR_LIBRARY)
     var this_tag = COLOR_LIBRARY[propName]    
     REV_COLOR_LIBRARY[this_tag]=propName
 }
-console.log(REV_COLOR_LIBRARY)
+// console.log(REV_COLOR_LIBRARY)
 
 
 // These are the colors that needs white font color
@@ -38,26 +38,73 @@ var ICON_SRC_LIST = ['url("$NONE$")']
 // The default color used when generating the grid
 var DEFAULT_BACKGROUD = COLOR_LIBRARY.white
 
+// The dictionary for all the IDs
+var ID_DICT = {
+    selected_border_color:"selected_border_color",
+    selected_bg_color:"selected_bg_color",
+    selected_default_background:"selected_default_background",
+    console:"console",
+    grid_size_input:"grid_size_input",
+    grid_size_input_support:"grid_size_input_support",
+    grid_section:"grid_section",
+    selected_name:"selected_name",
+    selected_text:"selected_text",
+    mode_name:"mode_name",
+    img:'img'
+}
+// The dictionary for all cell attributes
+var ATTR_DICT = {
+    name:"name",
+    onclick:"onclick",
+    border_color:"border_color",
+    background_color:"background_color",
+    thick_border:"thick_border",
+    background_index:"background_index"
+}
+
+// The dictionary of all element that uses the color lib
+var COLOR_ID = [ID_DICT.selected_border_color, ID_DICT.selected_bg_color, ID_DICT.selected_default_background]
+
+function LOAD_COLOR_LIB(){
+    // Add the color library to the dropdown list
+    
+    for(var this_id of COLOR_ID){
+        var this_element = document.getElementById(this_id)
+        this_element.innerHTML = ''
+        for(const [key, value] of Object.entries(COLOR_LIBRARY)){
+            this_element.innerHTML += '<option value="'+ value +'">'+ key +'</option>'
+        }
+    }
+}
+
+
+
+// Functions that is activated after page load
+window.addEventListener('load', function () {
+    LOAD_COLOR_LIB()
+  })
+
+// END OF DATA SEGMENT /////////////////////////////////////////////////////////////////////////////////////
 
 // This is the default function for creating the grid
 function create_grid(){
 
     // Check the user selection of the default backgroun when selected
-    console.log(document.getElementById('selected_default_background').value)
-    let selected_default_bg = REV_COLOR_LIBRARY[document.getElementById('selected_default_background').value]
+    // console.log(document.getElementById('selected_default_background').value)
+    let selected_default_bg = REV_COLOR_LIBRARY[document.getElementById(ID_DICT.selected_default_background).value]
 
 
 
     // Create a grid of the given size
     // console.log("Creating a new grid")
     CURRENT_MODE = MODE_DICT.content
-    // Get the size
-    var size = parseInt(document.getElementById("grid_size_input").value)   
-    var size_sup = parseInt(document.getElementById("grid_size_input_support").value)   
+    // Get the size "grid_size_input"
+    var size = parseInt(document.getElementById(ID_DICT.grid_size_input).value)   
+    var size_sup = parseInt(document.getElementById(ID_DICT.grid_size_input_support).value)   
     if (size_sup == parseInt("NaN")){
         size_sup = size
     }
-    var grid = document.getElementById("grid_section")
+    var grid = document.getElementById(ID_DICT.grid_section)
     grid.innerHTML = "" // clean the current part
     
     for (let i = 0; i < size+2; i++) {
@@ -66,24 +113,24 @@ function create_grid(){
         for (let j = 0; j < size_sup + 2; j++) {          
 
             var this_element = document.createElement("div")
-            this_element.setAttribute("name",i+'-'+j)
-            this_element.setAttribute('onclick', 'select(this)') 
+            this_element.setAttribute(ATTR_DICT.name,i+'-'+j)
+            this_element.setAttribute(ATTR_DICT.onclick, 'select(this)') 
             // this_element.setAttribute('oncontextmenu', 'clear(this)')
             this_element.addEventListener('contextmenu', clear) 
             // this_element.setAttribute('onwheel','scroll_handler(this)')
             this_element.addEventListener('wheel',scroll_handler)
             
 
-            this_element.setAttribute('border_color', COLOR_LIBRARY.white)
+            this_element.setAttribute(ATTR_DICT.border_color, COLOR_LIBRARY.white)
             // this_element.setAttribute('border_color', COLOR_LIBRARY[selected_default_bg])
             // Modify the background when selected
-            this_element.setAttribute('background_color', COLOR_LIBRARY.white)
+            this_element.setAttribute(ATTR_DICT.background_color, COLOR_LIBRARY.white)
             // this_element.setAttribute('background_color', COLOR_LIBRARY[selected_default_bg])
 
 
-            this_element.setAttribute('thick_border','0000') //[top, right][bottom left]
+            this_element.setAttribute(ATTR_DICT.thick_border,'0000') //[top, right][bottom left]
             // this_element.style.backgroundImage = ICON_SRC_LIST[0]
-            this_element.setAttribute('background_index',0)
+            this_element.setAttribute(ATTR_DICT.background_index,0)
 
             if(i==0||i==size+1||j==0||j==size_sup+1){
                 this_element.className="clear_cell"
@@ -106,8 +153,8 @@ function create_grid(){
                 this_element.style.boxShadow = COLOR_LIBRARY[selected_default_bg] 
                 this_element.style.background = COLOR_LIBRARY[selected_default_bg]
                 
-                this_element.setAttribute('border_color', COLOR_LIBRARY[selected_default_bg])
-                this_element.setAttribute('background_color', COLOR_LIBRARY[selected_default_bg])
+                this_element.setAttribute(ATTR_DICT.border_color, COLOR_LIBRARY[selected_default_bg])
+                this_element.setAttribute(ATTR_DICT.background_color, COLOR_LIBRARY[selected_default_bg])
             }
                              
             this_element.innerText=''
@@ -119,42 +166,32 @@ function create_grid(){
         grid.appendChild(this_line)        
     }
     // End of creating the grid
-    // Add the color library to the dropdown list
-    var color_id = ['selected_border_color','selected_bg_color']
-    for(var this_id of color_id){
-        var this_element = document.getElementById(this_id)
-        this_element.innerHTML = ''
-        for(const [key, value] of Object.entries(COLOR_LIBRARY)){
-            this_element.innerHTML += '<option value="'+ value +'">'+ key +'</option>'
-        }
-    }
-
-
+    
 }
 
 // This function will be called when a grid-cell is clicked (Select)
 function select(e){
     // modify_selected()
     SELECTED_ELEMENT = e
-    document.getElementById("selected_name").textContent = e.getAttribute("name")   
+    document.getElementById(ID_DICT.selected_name).textContent = e.getAttribute(ATTR_DICT.name)   
 
-    sel = document.getElementById("selected_border_color")
+    sel = document.getElementById(ID_DICT.selected_border_color)
     var options = Array.from(sel.options);
     // console.log(options)
     options.forEach((option, i) => {
         // console.log(option,i)
-      if (option.value === SELECTED_ELEMENT.getAttribute("border_color")) sel.selectedIndex = i;
+      if (option.value === SELECTED_ELEMENT.getAttribute(ATTR_DICT.border_color)) sel.selectedIndex = i;
     });
 
-    sel = document.getElementById("selected_bg_color")
+    sel = document.getElementById(ID_DICT.selected_bg_color)
     var options = Array.from(sel.options);
     // console.log(options)
     options.forEach((option, i) => {
         // console.log(option,i)
-      if (option.value === SELECTED_ELEMENT.getAttribute("background_color")) sel.selectedIndex = i;
+      if (option.value === SELECTED_ELEMENT.getAttribute(ATTR_DICT.background_color)) sel.selectedIndex = i;
     });
 
-    let selected_text = document.getElementById("selected_text")
+    let selected_text = document.getElementById(ID_DICT.selected_text)
     selected_text.value = e.innerText
     selected_text.focus(function() {this.select()} )
     
@@ -167,15 +204,15 @@ function modify_selected(e){
         return
     }
     // Update the text value 
-    SELECTED_ELEMENT.innerText = document.getElementById("selected_text").value
+    SELECTED_ELEMENT.innerText = document.getElementById(ID_DICT.selected_text).value
     // Update the border color
-    SELECTED_ELEMENT.setAttribute("border_color", document.getElementById("selected_border_color").value)
-    color_value = document.getElementById("selected_border_color").value + " inset 0 0 0 4px"    
+    SELECTED_ELEMENT.setAttribute(ATTR_DICT.border_color, document.getElementById(ID_DICT.selected_border_color).value)
+    color_value = document.getElementById(ID_DICT.selected_border_color).value + " inset 0 0 0 4px"    
     SELECTED_ELEMENT.style.boxShadow = color_value 
     // Update the background color
-    if(parseInt(SELECTED_ELEMENT.getAttribute("background_index")) == 0){
-        SELECTED_ELEMENT.setAttribute("background_color", document.getElementById("selected_bg_color").value)
-        color_value = document.getElementById("selected_bg_color").value
+    if(parseInt(SELECTED_ELEMENT.getAttribute(ATTR_DICT.background_index)) == 0){
+        SELECTED_ELEMENT.setAttribute(ATTR_DICT.background_color, document.getElementById(ID_DICT.selected_bg_color).value)
+        color_value = document.getElementById(ID_DICT.selected_bg_color).value
         SELECTED_ELEMENT.style.background = color_value 
     }    
     // Adjust the font color if the color value is black
@@ -195,12 +232,21 @@ function clear(e){
     var target_element = e.target
     // console.log(target_element)
     select(target_element)
-    // document.getElementById("selected_border_color").value = COLOR_LIBRARY.white
-    document.getElementById("selected_border_color").value = document.getElementById('selected_default_background').value 
+    if((target_element.classList).contains('grid_cell')){
+        document.getElementById(ID_DICT.selected_border_color).value = document.getElementById(ID_DICT.selected_default_background).value 
+    }
+    else{
+        document.getElementById(ID_DICT.selected_border_color).value = COLOR_LIBRARY.white
+    }  
     // Only clear the background when in content mode
     if(CURRENT_MODE ==MODE_DICT.content){       
-        // document.getElementById("selected_bg_color").value = COLOR_LIBRARY.white  
-        document.getElementById("selected_bg_color").value = document.getElementById('selected_default_background').value      
+        if((target_element.classList).contains('grid_cell')){
+            document.getElementById(ID_DICT.selected_bg_color).value = document.getElementById(ID_DICT.selected_default_background).value    
+        }
+        else{
+            document.getElementById(ID_DICT.selected_bg_color).value = COLOR_LIBRARY.white  
+        }
+          
     }
     modify_selected(target_element)   
 }    
@@ -219,18 +265,18 @@ function scroll_handler(e){
     // Under content mode:
     if (CURRENT_MODE == MODE_DICT.content){
         if(delta < 0){
-            target_element.setAttribute("background_index",0)
+            target_element.setAttribute(ATTR_DICT.background_index,0)
             // DeltaY < 0: Scroll on top
             let flag = false
-            document.getElementById("selected_bg_color").value = Object.entries(COLOR_LIBRARY)[0][0]
+            document.getElementById(ID_DICT.selected_bg_color).value = Object.entries(COLOR_LIBRARY)[0][0]
             for(const [key, value] of Object.entries(COLOR_LIBRARY)){
     
-                if(!flag && value == SELECTED_ELEMENT.getAttribute("background_color")){
+                if(!flag && value == SELECTED_ELEMENT.getAttribute(ATTR_DICT.background_color)){
                     flag = true
                     continue
                 }          
                 if(flag){
-                    document.getElementById("selected_bg_color").value = value
+                    document.getElementById(ID_DICT.selected_bg_color).value = value
                     flag = false
                     break
                 }
@@ -239,15 +285,15 @@ function scroll_handler(e){
         else{
             // DeltaY > 0: Scroll to bottom
             let flag = false
-            document.getElementById("selected_border_color").value = Object.entries(COLOR_LIBRARY)[0][0]
+            document.getElementById(ID_DICT.selected_border_color).value = Object.entries(COLOR_LIBRARY)[0][0]
             for(const [key, value] of Object.entries(COLOR_LIBRARY)){
     
-                if(!flag && value == SELECTED_ELEMENT.getAttribute("border_color")){
+                if(!flag && value == SELECTED_ELEMENT.getAttribute(ATTR_DICT.border_color)){
                     flag = true
                     continue
                 }          
                 if(flag){
-                    document.getElementById("selected_border_color").value = value
+                    document.getElementById(ID_DICT.selected_border_color).value = value
                     flag = false
                     break
                 }
@@ -263,7 +309,7 @@ function scroll_handler(e){
         if (target_element.classList.contains("clear_cell")){
             return
         }
-        let current_thick_status = target_element.getAttribute('thick_border')
+        let current_thick_status = target_element.getAttribute(ATTR_DICT.thick_border)
         TR = current_thick_status[0]+current_thick_status[1]
         BL = current_thick_status[2]+current_thick_status[3]
         // console.log(TR)
@@ -283,7 +329,7 @@ function scroll_handler(e){
         current_thick_status = TR+BL
         // console.log(current_thick_status)
         thick_border_modifier(target_element, current_thick_status)
-        target_element.setAttribute('thick_border', current_thick_status)
+        target_element.setAttribute(ATTR_DICT.thick_border, current_thick_status)
 
         modify_selected(target_element)
         return
@@ -293,7 +339,7 @@ function scroll_handler(e){
         // console.log(current_url)
         // let index = ICON_SRC_LIST.indexOf(current_url)
         // console.log(index+'/'+ICON_SRC_LIST.length)
-        index = parseInt(target_element.getAttribute("background_index"))
+        index = parseInt(target_element.getAttribute(ATTR_DICT.background_index))
 
         
         if(delta<0){
@@ -310,20 +356,20 @@ function scroll_handler(e){
                 target_element.style.backgroundImage = "none"
             }
             // console.log(target_element.style.backgroundImage)
-            target_element.setAttribute("background_index",index)
+            target_element.setAttribute(ATTR_DICT.background_index,index)
         }
         else{
             // DeltaY > 0: Scroll to bottom
             let flag = false
-            document.getElementById("selected_border_color").value = Object.entries(COLOR_LIBRARY)[0][0]
+            document.getElementById(ID_DICT.selected_border_color).value = Object.entries(COLOR_LIBRARY)[0][0]
             for(const [key, value] of Object.entries(COLOR_LIBRARY)){
     
-                if(!flag && value == SELECTED_ELEMENT.getAttribute("border_color")){
+                if(!flag && value == SELECTED_ELEMENT.getAttribute(ATTR_DICT.border_color)){
                     flag = true
                     continue
                 }          
                 if(flag){
-                    document.getElementById("selected_border_color").value = value
+                    document.getElementById(ID_DICT.selected_border_color).value = value
                     flag = false
                     break
                 }
@@ -343,7 +389,7 @@ function change_mode(e){
     let index = mode_list.indexOf(CURRENT_MODE)
     index = (index + 1) % mode_list.length    
     CURRENT_MODE = MODE_DICT[mode_list[index]]
-    document.getElementById("mode_name").textContent = MODE_DICT[mode_list[index]]
+    document.getElementById(ID_DICT.mode_name).textContent = MODE_DICT[mode_list[index]]
 }
 
 // Data segment for modifying the 'border' around the cells
@@ -379,7 +425,7 @@ function thick_border_modifier(target, status){
 
 // This function is used to upload the image for icons
 function upload(){
-    var input = document.getElementById("img")
+    var input = document.getElementById(ID_DICT.img)
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -395,24 +441,10 @@ function upload(){
         reader.readAsDataURL(input.files[0]);
         let message = input.value
         message = message.slice(message.lastIndexOf("\\")+1)        
-        document.getElementById("console").textContent = message + " uploaded!"
+        document.getElementById(ID_DICT.console).textContent = message + " uploaded!"
     }
     
     // console.log(ICON_SRC_LIST)
 }
 
 
-function set_default_bg(){
-    var this_element = document.getElementById('selected_default_background')
-        this_element.innerHTML = ''
-        for(const [key, value] of Object.entries(COLOR_LIBRARY)){
-            this_element.innerHTML += '<option value="'+ value +'">'+ key +'</option>'
-        }
-}
-
-
-// Functions that is activated after page load
-
-window.addEventListener('load', function () {
-    set_default_bg()
-  })
