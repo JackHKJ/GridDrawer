@@ -1,0 +1,61 @@
+<!DOCTYPE:html>
+<html>
+    <head>
+        <!-- author: Kejie Jack He -->
+        <link href="style.css" rel="stylesheet">
+        <script src="logic.js"></script>
+        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+        <script>
+            const download = () => {
+               html2canvas(document.querySelector('#grid_section')).then(canvas => {
+                //   document.body.appendChild(canvas);
+                canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({'image/png': blob})]));
+               });
+            }
+         </script>
+    </head>
+    <body>
+        <!-- The title section -->
+        <h1>This is a grid drawing tool</h1>
+        <!-- Setter for the width of the grid -->
+        <span>Enter the size of the grid:</span><br>
+        Row: <input type="text" id="grid_size_input" style="width: 40px;">
+        Col: <input type="text" id="grid_size_input_support" style="width: 40px;">
+        <select id="selected_default_background"></select>
+        <input type="button" value="Create!" id="grid_size_btn" onclick="create_grid()">
+
+        <!-- The grid section -->
+        <div class="grid_container">
+            <section id="grid_section">
+            </section>
+        </div>
+        <br>
+        <!-- The modifier part -->   
+        <div class="modifiers">
+            <!-- Selected cell hint -->
+            <p>Selected: <span id="selected_name"></span></p>
+            <!-- Current mode hint -->
+            <p>Mode: <span id="mode_name">content</span><input type="button" value="Switch!" id="mode_btn" onclick="change_mode()"></p>
+            <!-- Cell properties -->
+            <p>
+                Border: 
+                <select id="selected_border_color"></select>
+                Background: 
+                <select id="selected_bg_color"></select></p>
+            </p>
+            <!-- Text input -->
+            <p>Text: <input type="text" id="selected_text" onfocus="this.select()" onchange="modify_selected()"></p>
+            <!-- Btn panel -->
+            <input type="button" value="Modify!" id="modify_btn" onclick="modify_selected()">
+            <input type="button" value="ScreenShot!" id="screenshot_btn" onclick="download()">
+            <br>
+            <!-- Icon upload panel -->
+            Upload Icon Image:
+            <br>
+            <input type="file" id="img" name="img" accept="image/*">
+            <input type="button" value="Upload!" id="upload_btn" onclick="upload()">
+            <p id="console"></p>
+        </div>
+    </body>
+</html>
+
