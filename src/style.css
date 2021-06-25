@@ -21,6 +21,9 @@ body{
     align-items: center;
 }
 
+.cell{
+    user-select: none;
+}
 
 .grid_cell{
     margin:4px 0 0 4px;

@@ -65,6 +65,7 @@ var ATTR_DICT = {
 }
 
 var CLASS_DICT = {
+    cell:"cell",
     grid_line:"grid_line",
     clear_cell:"clear_cell",
     grid_cell:"grid_cell",
@@ -209,7 +210,8 @@ function create_grid(){
                 this_element.setAttribute(ATTR_DICT.border_color, COLOR_LIBRARY[selected_default_bg])
                 this_element.setAttribute(ATTR_DICT.background_color, COLOR_LIBRARY[selected_default_bg])
             }
-                             
+                    
+            this_element.classList.add(CLASS_DICT.cell)
             this_element.innerText=''
 
             
@@ -370,36 +372,36 @@ function scroll_handler(e){
         return
     }
     // Under border mode, modify the thick_border iteratively
-    if (CURRENT_MODE == MODE_DICT.border){
-        // border mode will not modify the clear cell
-        if (target_element.classList.contains(classList.clear_cell)){
-            return
-        }
-        let current_thick_status = target_element.getAttribute(ATTR_DICT.thick_border)
-        TR = current_thick_status[0]+current_thick_status[1]
-        BL = current_thick_status[2]+current_thick_status[3]
-        // console.log(TR)
-        // console.log(BL)
-        // Modify [top right]
-        if(delta < 0){
-          let index = THICK_LIST.indexOf(TR)
-          index = (index+1)%4
-          TR = THICK_LIST[index]
-        }
-        // Modify [bottom left]
-        else{
-            let index = THICK_LIST.indexOf(BL)
-            index = (index+1)%4
-            BL = THICK_LIST[index]
-        }
-        current_thick_status = TR+BL
-        // console.log(current_thick_status)
-        thick_border_modifier(target_element, current_thick_status)
-        target_element.setAttribute(ATTR_DICT.thick_border, current_thick_status)
+    // if (CURRENT_MODE == MODE_DICT.border){
+    //     // border mode will not modify the clear cell
+    //     if (target_element.classList.contains(classList.clear_cell)){
+    //         return
+    //     }
+    //     let current_thick_status = target_element.getAttribute(ATTR_DICT.thick_border)
+    //     TR = current_thick_status[0]+current_thick_status[1]
+    //     BL = current_thick_status[2]+current_thick_status[3]
+    //     // console.log(TR)
+    //     // console.log(BL)
+    //     // Modify [top right]
+    //     if(delta < 0){
+    //       let index = THICK_LIST.indexOf(TR)
+    //       index = (index+1)%4
+    //       TR = THICK_LIST[index]
+    //     }
+    //     // Modify [bottom left]
+    //     else{
+    //         let index = THICK_LIST.indexOf(BL)
+    //         index = (index+1)%4
+    //         BL = THICK_LIST[index]
+    //     }
+    //     current_thick_status = TR+BL
+    //     // console.log(current_thick_status)
+    //     thick_border_modifier(target_element, current_thick_status)
+    //     target_element.setAttribute(ATTR_DICT.thick_border, current_thick_status)
 
-        modify_selected(target_element)
-        return
-    }
+    //     modify_selected(target_element)
+    //     return
+    // }
     if(CURRENT_MODE == MODE_DICT.image){
         // let current_url = target_element.style.backgroundImage
         // console.log(current_url)
@@ -563,4 +565,108 @@ function output_by_type(){
     } 
 
 }
+
+// Click and toggle functionalities
+var TARGET_LIST = []
+var COORD_LIST = []
+var MOUSE_DOWN_FLAG = false
+
+// ondrag,ondrop,ondragend,ondragenter,ondragleave,ondragover = function(e){
+//     e.preventDefault()
+// }
+
+// Clear the list and ready to record
+onmousedown = function(e){
+    // if(e.target!=undefined && e.target.classList.contains(CLASS_DICT.cell)){
+    //     select(e.target)
+    // }    
+    console.log("mouse location:", e.clientX, e.clientY)
+    TARGET_LIST = []
+    COORD_LIST = []
+
+    MOUSE_DOWN_FLAG = true
+}
+
+onmousemove = function(e){
+    if(MOUSE_DOWN_FLAG){
+        if(!TARGET_LIST.includes(e.target) && e.target.classList.contains(CLASS_DICT.cell)){
+            TARGET_LIST.push(e.target)
+        }
+    }
+}
+
+onmouseup = function(e){
+    console.log("mouse location:", e.clientX, e.clientY)
+    MOUSE_DOWN_FLAG = false
+    console.log(TARGET_LIST)
+
+    if(CURRENT_MODE == MODE_DICT.border){
+        for(item of TARGET_LIST){
+            // let x = parseInt(item.getAttribute(ATTR_DICT.x_cord))
+            // let y = parseInt(item.getAttribute(ATTR_DICT.y_cord))
+            // // COORD_LIST.push("("+x+","+y+")")
+            // COORD_LIST.push([x,y])
+            COORD_LIST.push(item.getAttribute(ATTR_DICT.name))
+        }
+        
+        console.log(COORD_LIST)
+    
+        for(item of TARGET_LIST){
+            let x = parseInt(item.getAttribute(ATTR_DICT.x_cord))
+            let y = parseInt(item.getAttribute(ATTR_DICT.y_cord))
+            let border_str = ""
+    
+            if(COORD_LIST.includes((x-1)+"-"+(y))){
+                border_str += "0"
+            }
+            else{
+                border_str += "1"
+            }
+            if(COORD_LIST.includes((x)+"-"+(y-1))){
+                border_str += "0"
+            }
+            else{
+                border_str += "1"
+            }
+            if(COORD_LIST.includes((x+1)+"-"+(y))){
+                border_str += "0"
+            }
+            else{
+                border_str += "1"
+            }
+            if(COORD_LIST.includes((x)+"-"+(y+1))){
+                border_str += "0"
+            }
+            else{
+                border_str += "1"
+            }
+    
+            console.log(item.getAttribute(ATTR_DICT.name)+":"+border_str)
+    
+            thick_border_modifier(item, border_str)
+            item.setAttribute(ATTR_DICT.thick_border, border_str)
+    
+            modify_selected(item)
+    
+        
+        }
+        // Select the last element as to simulate a click
+        if(e.target!=undefined && e.target.classList.contains(CLASS_DICT.cell)){
+            select(e.target)
+        } 
+    }
+
+    
+
+
+
+
+
+    
+    
+}
+
+
+
+
 
