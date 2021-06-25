@@ -55,6 +55,8 @@ var ID_DICT = {
 // The dictionary for all cell attributes
 var ATTR_DICT = {
     name:"name",
+    x_cord:"x_cord",
+    y_cord:"y_cord",
     onclick:"onclick",
     border_color:"border_color",
     background_color:"background_color",
@@ -62,8 +64,23 @@ var ATTR_DICT = {
     background_index:"background_index"
 }
 
+var CLASS_DICT = {
+    grid_line:"grid_line",
+    clear_cell:"clear_cell",
+    grid_cell:"grid_cell",
+    clear_cell_modifier_width:"clear_cell_modifier_width",
+    clear_cell_modifier_height:"clear_cell_modifier_height",
+    grid_cell_modifier_right:"grid_cell_modifier_right",
+    grid_cell_modifier_down:"grid_cell_modifier_down"
+}
+
 // The dictionary of all element that uses the color lib
 var COLOR_ID = [ID_DICT.selected_border_color, ID_DICT.selected_bg_color, ID_DICT.selected_default_background]
+
+// The list of list that stores the data
+var GRID_DATA = []
+
+// END OF DATA SEGMENT /////////////////////////////////////////////////////////////////////////////////////
 
 function LOAD_COLOR_LIB(){
     // Add the color library to the dropdown list
@@ -78,13 +95,12 @@ function LOAD_COLOR_LIB(){
 }
 
 
-
 // Functions that is activated after page load
 window.addEventListener('load', function () {
     LOAD_COLOR_LIB()
   })
 
-// END OF DATA SEGMENT /////////////////////////////////////////////////////////////////////////////////////
+// END OF Initializers /////////////////////////////////////////////////////////////////////////////////////  
 
 // This is the default function for creating the grid
 function create_grid(){
@@ -92,8 +108,6 @@ function create_grid(){
     // Check the user selection of the default backgroun when selected
     // console.log(document.getElementById('selected_default_background').value)
     let selected_default_bg = REV_COLOR_LIBRARY[document.getElementById(ID_DICT.selected_default_background).value]
-
-
 
     // Create a grid of the given size
     // console.log("Creating a new grid")
@@ -109,11 +123,14 @@ function create_grid(){
     
     for (let i = 0; i < size+2; i++) {
         var this_line = document.createElement('div')
-        this_line.className = "grid_line"
+        this_line.className = CLASS_DICT.grid_line
         for (let j = 0; j < size_sup + 2; j++) {          
 
             var this_element = document.createElement("div")
             this_element.setAttribute(ATTR_DICT.name,i+'-'+j)
+            this_element.setAttribute(ATTR_DICT.x_cord,i)
+            this_element.setAttribute(ATTR_DICT.y_cord,j)
+
             this_element.setAttribute(ATTR_DICT.onclick, 'select(this)') 
             // this_element.setAttribute('oncontextmenu', 'clear(this)')
             this_element.addEventListener('contextmenu', clear) 
@@ -133,22 +150,22 @@ function create_grid(){
             this_element.setAttribute(ATTR_DICT.background_index,0)
 
             if(i==0||i==size+1||j==0||j==size_sup+1){
-                this_element.className="clear_cell"
+                this_element.className= CLASS_DICT.clear_cell
                 if ((i,j)in[(0,0),(size+1,size_sup+1)]){
-                    this_element.classList.add("clear_cell_modifier_width")
+                    this_element.classList.add(CLASS_DICT.clear_cell_modifier_width)
                 }
                 if ((i==size & j==0)||(i==size & j==size_sup+1)){
-                    this_element.classList.add("clear_cell_modifier_height")
+                    this_element.classList.add(CLASS_DICT.clear_cell_modifier_height)
                 }
                 
             }
             else{
-                this_element.className="grid_cell"
+                this_element.className= CLASS_DICT.grid_cell
                 if (j==size_sup){
-                    this_element.classList.add("grid_cell_modifier_right")
+                    this_element.classList.add(CLASS_DICT.grid_cell_modifier_right)
                 }
                 if(i==size){
-                    this_element.classList.add("grid_cell_modifier_down")
+                    this_element.classList.add(CLASS_DICT.grid_cell_modifier_down)
                 }
                 this_element.style.boxShadow = COLOR_LIBRARY[selected_default_bg] 
                 this_element.style.background = COLOR_LIBRARY[selected_default_bg]
@@ -167,6 +184,15 @@ function create_grid(){
     }
     // End of creating the grid
     
+    // Create the relative GRID_DATA for storage
+    GRID_DATA = []
+    for (let i = 0; i < size+2; i++) {
+        var this_line = []
+        for (let j = 0; j < size_sup + 2; j++) { 
+            this_line.push("")
+        }
+        GRID_DATA.push(this_line)
+    }
 }
 
 // This function will be called when a grid-cell is clicked (Select)
@@ -205,6 +231,8 @@ function modify_selected(e){
     }
     // Update the text value 
     SELECTED_ELEMENT.innerText = document.getElementById(ID_DICT.selected_text).value
+    GRID_DATA[SELECTED_ELEMENT.getAttribute(ATTR_DICT.x_cord)][SELECTED_ELEMENT.getAttribute(ATTR_DICT.y_cord)] = document.getElementById(ID_DICT.selected_text).value
+    console.log(GRID_DATA)
     // Update the border color
     SELECTED_ELEMENT.setAttribute(ATTR_DICT.border_color, document.getElementById(ID_DICT.selected_border_color).value)
     color_value = document.getElementById(ID_DICT.selected_border_color).value + " inset 0 0 0 4px"    
@@ -232,7 +260,7 @@ function clear(e){
     var target_element = e.target
     // console.log(target_element)
     select(target_element)
-    if((target_element.classList).contains('grid_cell')){
+    if((target_element.classList).contains(CLASS_DICT.grid_cell)){
         document.getElementById(ID_DICT.selected_border_color).value = document.getElementById(ID_DICT.selected_default_background).value 
     }
     else{
@@ -240,7 +268,7 @@ function clear(e){
     }  
     // Only clear the background when in content mode
     if(CURRENT_MODE ==MODE_DICT.content){       
-        if((target_element.classList).contains('grid_cell')){
+        if((target_element.classList).contains(CLASS_DICT.grid_cell)){
             document.getElementById(ID_DICT.selected_bg_color).value = document.getElementById(ID_DICT.selected_default_background).value    
         }
         else{
@@ -306,7 +334,7 @@ function scroll_handler(e){
     // Under border mode, modify the thick_border iteratively
     if (CURRENT_MODE == MODE_DICT.border){
         // border mode will not modify the clear cell
-        if (target_element.classList.contains("clear_cell")){
+        if (target_element.classList.contains(classList.clear_cell)){
             return
         }
         let current_thick_status = target_element.getAttribute(ATTR_DICT.thick_border)
