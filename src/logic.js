@@ -96,7 +96,7 @@ function load_JSON(){
 
     $.getJSON('https://raw.githubusercontent.com/JackHKJ/GridDrawer/main/src/data.json',data=>{
         console.log(data)
-        return data
+        JSON_SRC = data
      })    
 
 }
