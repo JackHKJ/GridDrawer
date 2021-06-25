@@ -549,11 +549,7 @@ function export_to_TXT(content, filename) {
    
 // }
 
-
 function output_by_type(){
-
-    console.log(JSONfn.stringify(document.getElementById('layout').innerHTML))
-
 
     var this_type = document.getElementById("download_selector").value + ""
     // console.log(this_type)
