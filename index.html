@@ -2,12 +2,18 @@
 <html>
     <head>
         <!-- author: Kejie Jack He -->
-        <link href="style.css" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <link href="src/style.css" rel="stylesheet">
         <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-        <script src="logic.js"></script>        
+        <script src="src/FileSaver.js"></script>      
+        <!-- <script src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/src/FileSaver.js"></script> -->
+        <script src="src/jsonfn.js"></script> 
+        <script src="src/logic.js"></script>        
         <script>
-            const download = () => {
+            const Save_screen_shot = () => {
                html2canvas(document.querySelector('#grid_section')).then(canvas => {
                 //   document.body.appendChild(canvas);
                 canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({'image/png': blob})]));
@@ -17,13 +23,19 @@
     </head>
     <body>
         <!-- The title section -->
-        <h1>This is a grid drawing tool</h1>
+        <div class="title_class">
+            <h1>This is a grid drawing tool</h1>
+        </div>
+        
+
         <!-- Setter for the width of the grid -->
+        <div class="grid_creator">
         <span>Enter the size of the grid:</span><br>
-        Row: <input type="text" id="grid_size_input" style="width: 40px;">
-        Col: <input type="text" id="grid_size_input_support" style="width: 40px;">
-        <select id="selected_default_background"></select>
-        <input type="button" value="Create!" id="grid_size_btn" onclick="create_grid()">
+            Row: <input type="text" id="grid_size_input" style="width: 40px;">
+            Col: <input type="text" id="grid_size_input_support" style="width: 40px;">
+            <select id="selected_default_background"></select>
+            <input type="button" value="Create!" id="grid_size_btn" onclick="create_grid()">
+        </div>
 
         <!-- The grid section -->
         <div class="grid_container">
@@ -31,6 +43,7 @@
             </section>
         </div>
         <br>
+
         <!-- The modifier part -->   
         <div class="modifiers">
             <!-- Selected cell hint -->
@@ -48,7 +61,7 @@
             <p>Text: <input type="text" id="selected_text" onfocus="this.select()" onchange="modify_selected()"></p>
             <!-- Btn panel -->
             <input type="button" value="Modify!" id="modify_btn" onclick="modify_selected()">
-            <input type="button" value="ScreenShot!" id="screenshot_btn" onclick="download()">
+            <input type="button" value="ScreenShot!" id="screenshot_btn" onclick="Save_screen_shot()">
             <br>
             <!-- Icon upload panel -->
             Upload Icon Image:
@@ -56,6 +69,12 @@
             <input type="file" id="img" name="img" accept="image/*">
             <input type="button" value="Upload!" id="upload_btn" onclick="upload()">
             <p id="console"></p>
+        </div>
+
+        <div class="download_section">
+            Download as:
+            <select id="download_selector"></select>
+            <input type="button" value="Download!" id="download_btn" onclick="output_by_type()">
         </div>
     </body>
 </html>
