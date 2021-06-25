@@ -589,7 +589,7 @@ onmousedown = function(e){
 
 onmousemove = function(e){
     if(MOUSE_DOWN_FLAG){
-        if(!TARGET_LIST.includes(e.target) && e.target.classList.contains(CLASS_DICT.cell)){
+        if(!TARGET_LIST.includes(e.target) && e.target.classList.contains(CLASS_DICT.grid_cell)){
             TARGET_LIST.push(e.target)
         }
     }
