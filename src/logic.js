@@ -88,9 +88,8 @@ var JSON_SRC = ""
 
 // This function loads the necessary JSON file
 function load_JSON(){
-    // $.getJSON('src/data.json',data=>{
+    // $.getJSON('src/data.json',data=>{    
     //     console.log(data['author'])
-    //     // console.log(data['Nurikabe'])
     //     JSON_SRC = data
     // })
 
@@ -516,8 +515,8 @@ function upload(){
 
 
 // This function helps to output the necessary txt file
-function export_to_TXT(content, filename) {    
-    var file = new File([content], filename+".txt" , { type:  "text/plain;charset=utf-8"  });
+function export_to_TXT(content, filename, ending="") {    
+    var file = new File([content], filename+ending , { type:  "text/plain;charset=utf-8"  });
     saveAs(file);
 }
 

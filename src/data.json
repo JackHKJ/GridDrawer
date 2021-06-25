@@ -2,7 +2,7 @@
     "author":"Kejie Jack He",        
 
     "Nurikabe":{
-        "template":"<!--?xml version='1.0' encoding='UTF-8' standalone='no'?-->\n<legup version=\"2.0.0\">\n    <puzzle name=\"Nurikabe\">\n        <board height=\"$HEIGHT$\" width=\"$WIDTH$\">\n            <cells>\n                $CONTENT$\n            </cells>\n        </board>\n    </puzzle>\n</legup>",
+        "template":"<?xml version='1.0' encoding='UTF-8' standalone='no'?>\n<Legup version='2.0.0'>\n    <puzzle name='Nurikabe'>\n        <board height='$HEIGHT$' width='$WIDTH$'>\n            <cells>\n                $CONTENT$\n            </cells>\n        </board>\n    </puzzle>\n</Legup>",
         "cell":"<cell value='$VALUE$' x='$X$' y='$Y$'/>",
         "function":"function Nurikabe_output(e){   \r\n\r\n    var template = ''+ JSON_SRC['Nurikabe']['template']\r\n    template = template.replace('$HEIGHT$',GRID_HEIGHT)\r\n    template = template.replace('$WIDTH$',GRID_WIDTH)\r\n    var content = ''\r\n    var cell = ''+ JSON_SRC['Nurikabe']['cell']\r\n    var flag = false\r\n    for (let i = 0; i < GRID_HEIGHT; i++) {\r\n        for (let j = 0; j < GRID_WIDTH; j++) {\r\n            if(GRID_DATA[i+1][j+1] != ''){\r\n                var thisline = cell.replace('$VALUE$',GRID_DATA[i+1][j+1]).replace('$X$',i).replace('$Y$',j)\r\n                content += thisline\r\n                flag = true\r\n            }\r\n        }\r\n    }\r\n    template = template.replace('$CONTENT$',content)\r\n    if(flag){\r\n        console.log(template)\r\n        return template\r\n    }\r\n    else{\r\n        console.log(\"Nothing to output! Empty board.\")\r\n    }\r\n   \r\n}"
     }
