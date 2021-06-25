@@ -596,6 +596,9 @@ onmousemove = function(e){
 }
 
 onmouseup = function(e){
+
+    console.log(e)
+
     console.log("mouse location:", e.clientX, e.clientY)
     MOUSE_DOWN_FLAG = false
     console.log(TARGET_LIST)
@@ -610,46 +613,55 @@ onmouseup = function(e){
         }
         
         console.log(COORD_LIST)
-    
-        for(item of TARGET_LIST){
-            let x = parseInt(item.getAttribute(ATTR_DICT.x_cord))
-            let y = parseInt(item.getAttribute(ATTR_DICT.y_cord))
-            let border_str = ""
-    
-            if(COORD_LIST.includes((x-1)+"-"+(y))){
-                border_str += "0"
-            }
-            else{
-                border_str += "1"
-            }
-            if(COORD_LIST.includes((x)+"-"+(y-1))){
-                border_str += "0"
-            }
-            else{
-                border_str += "1"
-            }
-            if(COORD_LIST.includes((x+1)+"-"+(y))){
-                border_str += "0"
-            }
-            else{
-                border_str += "1"
-            }
-            if(COORD_LIST.includes((x)+"-"+(y+1))){
-                border_str += "0"
-            }
-            else{
-                border_str += "1"
-            }
-    
-            console.log(item.getAttribute(ATTR_DICT.name)+":"+border_str)
-    
-            thick_border_modifier(item, border_str)
-            item.setAttribute(ATTR_DICT.thick_border, border_str)
-    
-            modify_selected(item)
-    
+        // A left click, toggle the borders
+        if(e.button == 0){
+            for(item of TARGET_LIST){
+                let x = parseInt(item.getAttribute(ATTR_DICT.x_cord))
+                let y = parseInt(item.getAttribute(ATTR_DICT.y_cord))
+                let border_str = ""
         
+                if(COORD_LIST.includes((x-1)+"-"+(y))){
+                    border_str += "0"
+                }
+                else{
+                    border_str += "1"
+                }
+                if(COORD_LIST.includes((x)+"-"+(y-1))){
+                    border_str += "0"
+                }
+                else{
+                    border_str += "1"
+                }
+                if(COORD_LIST.includes((x+1)+"-"+(y))){
+                    border_str += "0"
+                }
+                else{
+                    border_str += "1"
+                }
+                if(COORD_LIST.includes((x)+"-"+(y+1))){
+                    border_str += "0"
+                }
+                else{
+                    border_str += "1"
+                }
+        
+                console.log(item.getAttribute(ATTR_DICT.name)+":"+border_str)
+        
+                thick_border_modifier(item, border_str)
+                item.setAttribute(ATTR_DICT.thick_border, border_str)    
+                modify_selected(item)    
+            
+            } 
         }
+        // A right click, clear the borders
+        if(e.button == 2){
+            for(item of TARGET_LIST){
+                thick_border_modifier(item, "0000")
+                item.setAttribute(ATTR_DICT.thick_border, "0000")    
+                modify_selected(item)    
+            }
+        }
+
         // Select the last element as to simulate a click
         if(e.target!=undefined && e.target.classList.contains(CLASS_DICT.cell)){
             select(e.target)
