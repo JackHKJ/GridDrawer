@@ -80,6 +80,8 @@ var COLOR_ID = [ID_DICT.selected_border_color, ID_DICT.selected_bg_color, ID_DIC
 // The list of list that stores the data
 var GRID_DATA = []
 
+// The JSON for output
+
 // END OF DATA SEGMENT /////////////////////////////////////////////////////////////////////////////////////
 
 function LOAD_COLOR_LIB(){
@@ -491,7 +493,7 @@ function load_file(path){
 }
 
 function load_file_1(){
-    $.getJSON('./method.json',data=>{
+    $.getJSON('https://raw.githubusercontent.com/JackHKJ/GridDrawer/main/data.json',data=>{
         console.log(data)
       })
 }
