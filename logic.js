@@ -232,7 +232,7 @@ function modify_selected(e){
     // Update the text value 
     SELECTED_ELEMENT.innerText = document.getElementById(ID_DICT.selected_text).value
     GRID_DATA[SELECTED_ELEMENT.getAttribute(ATTR_DICT.x_cord)][SELECTED_ELEMENT.getAttribute(ATTR_DICT.y_cord)] = document.getElementById(ID_DICT.selected_text).value
-    console.log(GRID_DATA)
+    // console.log(GRID_DATA)
     // Update the border color
     SELECTED_ELEMENT.setAttribute(ATTR_DICT.border_color, document.getElementById(ID_DICT.selected_border_color).value)
     color_value = document.getElementById(ID_DICT.selected_border_color).value + " inset 0 0 0 4px"    
@@ -476,3 +476,25 @@ function upload(){
 }
 
 
+function load_file(path){
+    var url = ("method.json")
+    var request = new XMLHttpRequest()
+    request.open('get', url)
+    request.responseType = 'text'
+    request.send()
+    request.onload = function(){
+        if(request.status == 200){
+            var json = JSON.parse(request.responseText)
+            console.log(json)
+        }
+    }
+}
+
+function load_file_1(){
+    $.getJSON('./method.json',data=>{
+        console.log(data)
+      })
+}
+
+// load_file()
+load_file_1()
