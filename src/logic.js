@@ -149,6 +149,7 @@ function create_grid(){
     // Create a grid of the given size
     // console.log("Creating a new grid")
     CURRENT_MODE = MODE_DICT.content
+    document.getElementById(ID_DICT.mode_name).textContent = MODE_DICT.content
     // Get the size "grid_size_input"
     var size = parseInt(document.getElementById(ID_DICT.grid_size_input).value)   
     var size_sup = parseInt(document.getElementById(ID_DICT.grid_size_input_support).value)   
@@ -212,9 +213,7 @@ function create_grid(){
             }
                     
             this_element.classList.add(CLASS_DICT.cell)
-            this_element.innerText=''
-
-            
+            this_element.innerText=''           
 
             this_line.appendChild(this_element)
         }
