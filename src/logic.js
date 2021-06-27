@@ -85,19 +85,28 @@ var GRID_WIDTH = 0
 
 // The JSON for OUTPUT
 var JSON_SRC = ""
+// Load the local JSON if set to true
+var JSON_FROM_LOCAL = false
 
 
 // This function loads the necessary JSON file
 function load_JSON(){
-    // $.getJSON('src/data.json',data=>{    
-    //     console.log(data['author'])
-    //     JSON_SRC = data
-    // })
 
-    $.getJSON('https://raw.githubusercontent.com/JackHKJ/GridDrawer/main/src/data.json',data=>{
-        console.log(data)
-        JSON_SRC = data
-     })    
+    if(JSON_FROM_LOCAL){
+        $.getJSON('src/data.json',data=>{    
+            // console.log(data['author'])
+            console.log(data)
+            JSON_SRC = data
+        })    
+    }
+    else{
+        $.getJSON('https://raw.githubusercontent.com/JackHKJ/GridDrawer/main/src/data.json',data=>{
+            console.log(data)
+            JSON_SRC = data
+        })  
+    }
+   
+      
 
 }
 
@@ -118,7 +127,9 @@ function LOAD_COLOR_LIB(){
 // The output types
 
 var OUTPUT_TYPE_DICT = {
-    Nurikabe:"Nurikabe"
+    General:"General",
+    Nurikabe:"Nurikabe",
+    Sudoku:"Sudoku"
 }
 
 function LOAD_OUTPUT_TYPE(){
@@ -150,6 +161,7 @@ function create_grid(){
     // console.log("Creating a new grid")
     CURRENT_MODE = MODE_DICT.content
     document.getElementById(ID_DICT.mode_name).textContent = MODE_DICT.content
+    document.getElementById(ID_DICT.selected_name).textContent = "None"
     // Get the size "grid_size_input"
     var size = parseInt(document.getElementById(ID_DICT.grid_size_input).value)   
     var size_sup = parseInt(document.getElementById(ID_DICT.grid_size_input_support).value)   
@@ -549,7 +561,41 @@ function export_to_TXT(content, filename, ending="") {
    
 // }
 
+
+// function Sudoku_output(e){   
+
+//     if(GRID_WIDTH!=GRID_HEIGHT){
+//         console.log("Not a Sudoku board!")
+//         return
+//     }
+//     var template = ''+ JSON_SRC['Sudoku']['template']
+//     template = template.replace('$SIZE$',GRID_HEIGHT)
+//     var content = ''
+//     var cell = ''+ JSON_SRC['Sudoku']['cell']
+//     var flag = false
+//     for (let i = 0; i < GRID_HEIGHT; i++) {
+//         for (let j = 0; j < GRID_WIDTH; j++) {
+//             if(GRID_DATA[i+1][j+1] != '' && Number.isInteger(parseInt(GRID_DATA[i+1][j+1]))){
+//                 var thisline = cell.replace('$VALUE$',GRID_DATA[i+1][j+1]).replace('$X$',i).replace('$Y$',j)
+//                 content += thisline
+//                 flag = true
+//             }
+//         }
+//     }
+//     template = template.replace('$CONTENT$',content)
+//     if(flag){
+//         console.log(template)
+//         return template
+//     }
+//     else{
+//         console.log("Nothing to output! Empty board.")
+//     }
+   
+// }
+
 function output_by_type(){
+
+    // console.log(JSONfn.stringify())
 
     var this_type = document.getElementById("download_selector").value + ""
     // console.log(this_type)
@@ -579,7 +625,7 @@ onmousedown = function(e){
     // if(e.target!=undefined && e.target.classList.contains(CLASS_DICT.cell)){
     //     select(e.target)
     // }    
-    console.log("mouse location:", e.clientX, e.clientY)
+    // console.log("mouse location:", e.clientX, e.clientY)
     TARGET_LIST = []
     COORD_LIST = []
 
@@ -596,11 +642,11 @@ onmousemove = function(e){
 
 onmouseup = function(e){
 
-    console.log(e)
+    // console.log(e)
 
-    console.log("mouse location:", e.clientX, e.clientY)
+    // console.log("mouse location:", e.clientX, e.clientY)
     MOUSE_DOWN_FLAG = false
-    console.log(TARGET_LIST)
+    // console.log(TARGET_LIST)
 
     if(CURRENT_MODE == MODE_DICT.border){
         for(item of TARGET_LIST){
@@ -666,18 +712,4 @@ onmouseup = function(e){
             select(e.target)
         } 
     }
-
-    
-
-
-
-
-
-    
-    
 }
-
-
-
-
-
