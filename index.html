@@ -1,36 +1,38 @@
 <!DOCTYPE:html>
-<html>
+    <html>
+
     <head>
         <!-- author: Kejie Jack He -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <link href="src/style.css" rel="stylesheet">
-        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-        <script src="src/FileSaver.js"></script>      
+        <script src="src/FileSaver.js"></script>
         <!-- <script src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/src/FileSaver.js"></script> -->
-        <script src="src/jsonfn.js"></script> 
-        <script src="src/logic.js"></script>        
+        <script src="src/jsonfn.js"></script>
+        <script src="src/logic.js"></script>
         <script>
             const Save_screen_shot = () => {
-               html2canvas(document.querySelector('#grid_section')).then(canvas => {
-                //   document.body.appendChild(canvas);
-                canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({'image/png': blob})]));
-               });
+                html2canvas(document.querySelector('#grid_section')).then(canvas => {
+                    //   document.body.appendChild(canvas);
+                    canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]));
+                });
             }
-         </script>
+        </script>
     </head>
+
     <body>
         <!-- The title section -->
         <div class="title_class">
             <h1>This is a grid drawing tool</h1>
         </div>
-        
+
 
         <!-- Setter for the width of the grid -->
         <div class="grid_creator">
-        <span>Enter the size of the grid:</span><br>
+            <span>Enter the size of the grid:</span><br>
             Row: <input type="text" id="grid_size_input" style="width: 40px;">
             Col: <input type="text" id="grid_size_input_support" style="width: 40px;">
             <select id="selected_default_background"></select>
@@ -44,18 +46,20 @@
         </div>
         <br>
 
-        <!-- The modifier part -->   
+        <!-- The modifier part -->
         <div class="modifiers">
             <!-- Selected cell hint -->
             <p>Selected: <span id="selected_name"></span></p>
             <!-- Current mode hint -->
-            <p>Mode: <span id="mode_name">content</span><input type="button" value="Switch!" id="mode_btn" onclick="change_mode()"></p>
+            <p>Mode: <span id="mode_name">content</span><input type="button" value="Switch!" id="mode_btn"
+                    onclick="change_mode()"></p>
             <!-- Cell properties -->
             <p>
-                Border: 
+                Border:
                 <select id="selected_border_color"></select>
-                Background: 
-                <select id="selected_bg_color"></select></p>
+                Background:
+                <select id="selected_bg_color"></select>
+            </p>
             </p>
             <!-- Text input -->
             <p>Text: <input type="text" id="selected_text" onfocus="this.select()" onchange="modify_selected()"></p>
@@ -77,5 +81,5 @@
             <input type="button" value="Download!" id="download_btn" onclick="output_by_type()">
         </div>
     </body>
-</html>
 
+    </html>
