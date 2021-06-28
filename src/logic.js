@@ -489,13 +489,25 @@ function scroll_handler(e) {
 
 // Function that iteratively switch the mode 
 // Mode: content/border/image
+
+// const MODE_DICT = {
+//     content: "content",
+//     border: "border",
+//     line: "line",
+//     image: "image"
+// }
+
 function change_mode(e) {
+    // Change the mode variable and the displayed name
     let mode_list = Object.keys(MODE_DICT)
     let index = mode_list.indexOf(CURRENT_MODE)
     index = (index + 1) % mode_list.length
     CURRENT_MODE = MODE_DICT[mode_list[index]]
-    document.getElementById(ID_DICT.mode_name).textContent = MODE_DICT[mode_list[index]]
+    document.getElementById(ID_DICT.mode_name).textContent = CURRENT_MODE
+    // Change the displayed elements
 }
+
+
 
 // Data segment for modifying the 'border' around the cells
 const BORDER_NORMAL = '2px rgb(200, 200, 200) solid'
@@ -674,7 +686,7 @@ onmouseup = function (e) {
 
     // console.log("mouse location:", e.clientX, e.clientY)
     MOUSE_DOWN_FLAG = false
-    console.log(TARGET_LIST)
+    // console.log(TARGET_LIST)
 
     // Iteratively store all the names of the element (coordinates as name 'x-y')
     for (item of TARGET_LIST) {
@@ -751,6 +763,7 @@ onmouseup = function (e) {
                 let element_1 = TARGET_LIST[i]
                 let element_2 = TARGET_LIST[i + 1]
                 let tie_breaker_result = line_tie_breaker(element_1, element_2)
+                // tie_breaker_result format: element, namestr, orientation
                 // console.log(tie_breaker_result)
                 if (tie_breaker_result != undefined && !(tie_breaker_result[1] in GRID_LINE_DICT)) {
                     let line_seg = document.createElement("div")
@@ -763,14 +776,32 @@ onmouseup = function (e) {
                     }
                     line_seg.style.left = (get_offset(tie_breaker_result[0]).left + 32) + "px"
                     line_seg.style.top = (get_offset(tie_breaker_result[0]).top + 32) + "px"
+                    // Give id to this specific element for search
+                    line_seg.id = line_tie_breaker[1]
                     tie_breaker_result[0].appendChild(line_seg)
-                    GRID_LINE_DICT[tie_breaker_result[1]] = tie_breaker_result[0]
+                    GRID_LINE_DICT[tie_breaker_result[1]] = line_seg
                 }
             }
         }
+        // right key for cleaning the lines
+        if(e.button == 2){
+            for (let i = 0; i < TARGET_LIST.length - 1; i++) {
+                let element_1 = TARGET_LIST[i]
+                let element_2 = TARGET_LIST[i + 1]
+                let tie_breaker_result = line_tie_breaker(element_1, element_2)
+                // console.log(tie_breaker_result)
+                if (tie_breaker_result != undefined && (tie_breaker_result[1] in GRID_LINE_DICT)) {
+                    // let toberemove = document.getElementById(tie_breaker_result[1])
+                    // console.log(toberemove)
+                    // tie_breaker_result[0].removeChild()
+                    tie_breaker_result[0].removeChild(GRID_LINE_DICT[tie_breaker_result[1]])
+                    delete GRID_LINE_DICT[tie_breaker_result[1]]
+                }
+            }
 
-
-
+        }
+        
+        
     }
 }
 
