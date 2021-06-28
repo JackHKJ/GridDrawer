@@ -74,6 +74,7 @@ const CLASS_DICT = {
     clear_cell_modifier_height: "clear_cell_modifier_height",
     grid_cell_modifier_right: "grid_cell_modifier_right",
     grid_cell_modifier_down: "grid_cell_modifier_down",
+    line_segment: "line_segment",
     line_segment_vertical: "line_segment_vertical",
     line_segment_horizontal: "line_segment_horizontal"
 }
@@ -81,11 +82,18 @@ const CLASS_DICT = {
 // The dictionary of all element that uses the color lib
 const COLOR_ID = [ID_DICT.selected_border_color, ID_DICT.selected_bg_color, ID_DICT.selected_default_background]
 
+// Grid line status
+const GRID_LINE_ORIENTATION = {
+    vertical: "vertical",
+    horizontal: "horizontal"
+}
+
 // The list of list that stores the data
 var GRID_DATA = []
 var GRID_DICT = []
 var GRID_HEIGHT = 0
 var GRID_WIDTH = 0
+var GRID_LINE_DICT = {}
 
 // The JSON for OUTPUT
 var JSON_SRC = ""
@@ -173,8 +181,12 @@ function create_grid() {
         size_sup = size
     }
     var grid = document.getElementById(ID_DICT.grid_section)
-    grid.innerHTML = "" // clean the current part
+
+    // clean the current part
+    grid.innerHTML = ""
+
     GRID_DICT = {}
+    GRID_LINE_DICT = {}
 
     for (let i = 0; i < size + 2; i++) {
         var this_line = document.createElement('div')
@@ -662,11 +674,12 @@ onmouseup = function (e) {
 
     // console.log("mouse location:", e.clientX, e.clientY)
     MOUSE_DOWN_FLAG = false
-    // console.log(TARGET_LIST)
+    console.log(TARGET_LIST)
+
+    // Iteratively store all the names of the element (coordinates as name 'x-y')
     for (item of TARGET_LIST) {
         COORD_LIST.push(item.getAttribute(ATTR_DICT.name))
     }
-
 
     // Under border mode, user can press and drag the left mouse key to create border,
     // press and drag the right mouse key to clear the created border
@@ -726,9 +739,42 @@ onmouseup = function (e) {
         if (e.target != undefined && e.target.classList.contains(CLASS_DICT.cell)) {
             select(e.target)
         }
+        return
+    }
+
+    // Under border mode, user can press and drag the left mouse key to create lines,
+    // press and drag the right mouse key to clear the created lines
+    if (CURRENT_MODE == MODE_DICT.line) {
+        // left key for creating lines
+        if (e.button == 0) {
+            for (let i = 0; i < TARGET_LIST.length - 1; i++) {
+                let element_1 = TARGET_LIST[i]
+                let element_2 = TARGET_LIST[i + 1]
+                let tie_breaker_result = line_tie_breaker(element_1, element_2)
+                // console.log(tie_breaker_result)
+                if (tie_breaker_result != undefined && !(tie_breaker_result[1] in GRID_LINE_DICT)) {
+                    let line_seg = document.createElement("div")
+                    line_seg.classList.add(CLASS_DICT.line_segment)
+                    if (tie_breaker_result[2] == GRID_LINE_ORIENTATION.horizontal) {
+                        line_seg.classList.add(CLASS_DICT.line_segment_horizontal)
+                    }
+                    if (tie_breaker_result[2] == GRID_LINE_ORIENTATION.vertical) {
+                        line_seg.classList.add(CLASS_DICT.line_segment_vertical)
+                    }
+                    line_seg.style.left = (get_offset(tie_breaker_result[0]).left + 32) + "px"
+                    line_seg.style.top = (get_offset(tie_breaker_result[0]).top + 32) + "px"
+                    tie_breaker_result[0].appendChild(line_seg)
+                    GRID_LINE_DICT[tie_breaker_result[1]] = tie_breaker_result[0]
+                }
+            }
+        }
+
+
+
     }
 }
 
+// Function that finds the x,y coordinate of the top-left corner of a given element e
 function get_offset(e) {
     var rect = e.getBoundingClientRect();
     return {
@@ -736,17 +782,87 @@ function get_offset(e) {
         top: rect.top + window.scrollY
     }
 }
-function set_offset_line(line, ID) {
-    line.style.left = (get_offset(GRID_DICT[ID]).left + 32) + "px"
-    line.style.top = (get_offset(GRID_DICT[ID]).top + 32) + "px"
+
+// Function that tells the priority of two cells (row>>col)
+// e.g. 1-1 shall be listed before 2-1, 1-2 shall be listed before 1-3
+// same name or name that is not adjacent shall be rejected, an undefined will be returned
+// return will be in [prior_element, namestr, orientation] format
+function line_tie_breaker(element_1, element_2) {
+    // reject if cannot read the name
+    let name_1 = ""
+    let name_2 = ""
+    let ret_str = ""
+    let prior_element = null
+    let orientation = null
+    try {
+        name_1 = element_1.getAttribute(ATTR_DICT.name)
+        name_2 = element_2.getAttribute(ATTR_DICT.name)
+    } catch (error) {
+        console.log("Cannot get the info")
+        return undefined
+    }
+    if (!(element_1.classList).contains(CLASS_DICT.cell) || !(element_2.classList).contains(CLASS_DICT.cell)) {
+        console.log("Not a cell")
+        return undefined
+    }
+    if (name_1 == name_2 || name_1 == "" || name_2 == "") {
+        console.log("Empty or duplicate element inputed")
+        return undefined
+    }
+    let x_1 = element_1.getAttribute(ATTR_DICT.x_cord)
+    let x_2 = element_2.getAttribute(ATTR_DICT.x_cord)
+    let y_1 = element_1.getAttribute(ATTR_DICT.y_cord)
+    let y_2 = element_2.getAttribute(ATTR_DICT.y_cord)
+    if (Math.abs(x_1 - x_2) > 1 || Math.abs(y_1 - y_2) > 1 || (Math.abs(x_1 - x_2) + Math.abs(y_1 - y_2)) > 2) {
+        console.log("Not adjacent element")
+        return undefined
+    }
+    if (x_1 < x_2 && y_1 == y_2) {
+        ret_str = "v" + name_1 + name_2
+        prior_element = element_1
+        orientation = GRID_LINE_ORIENTATION.vertical
+    }
+    if (x_1 > x_2 && y_1 == y_2) {
+        ret_str = "v" + name_2 + name_1
+        prior_element = element_2
+        orientation = GRID_LINE_ORIENTATION.vertical
+    }
+    if (y_1 < y_2 && x_1 == x_2) {
+        ret_str = "h" + name_1 + name_2
+        prior_element = element_1
+        orientation = GRID_LINE_ORIENTATION.horizontal
+    }
+    if (y_1 > y_2 && x_1 == x_2) {
+        ret_str = "h" + name_2 + name_1
+        prior_element = element_2
+        orientation = GRID_LINE_ORIENTATION.horizontal
+    }
+    if (prior_element != null) {
+        return [prior_element, ret_str, orientation]
+    }
+    console.log("unknown error!")
+    return undefined
 }
 
+// function set_offset_line(line, ID) {
+//     line.style.left = (get_offset(GRID_DICT[ID]).left + 32) + "px"
+//     line.style.top = (get_offset(GRID_DICT[ID]).top + 32) + "px"
+// }
 
-function add_line() {
-    console.log(GRID_DICT['1-1'])
-    var line_seg = document.createElement("div")
-    line_seg.className = "line_segment_vertical"
-    line_seg.style.left = (get_offset(GRID_DICT['1-1']).left + 32) + "px"
-    line_seg.style.top = (get_offset(GRID_DICT['1-1']).top + 32) + "px"
-    GRID_DICT["1-1"].appendChild(line_seg)
-}
+
+// function add_line() {
+//     console.log(GRID_DICT['1-1'])
+//     var line_seg = document.createElement("div")
+//     line_seg.classList.add(CLASS_DICT.line_segment_horizontal)
+//     line_seg.classList.add(CLASS_DICT.line_segment)
+//     line_seg.style.left = (get_offset(GRID_DICT['1-1']).left + 32) + "px"
+//     line_seg.style.top = (get_offset(GRID_DICT['1-1']).top + 32) + "px"
+//     GRID_DICT["1-1"].appendChild(line_seg)
+
+//     var line_seg = document.createElement("div")
+//     line_seg.classList.add(CLASS_DICT.line_segment_vertical)
+//     line_seg.classList.add(CLASS_DICT.line_segment)
+//     line_seg.style.left = (get_offset(GRID_DICT['1-1']).left + 32) + "px"
+//     line_seg.style.top = (get_offset(GRID_DICT['1-1']).top + 32) + "px"
+//     GRID_DICT["1-1"].appendChild(line_seg)
+// }

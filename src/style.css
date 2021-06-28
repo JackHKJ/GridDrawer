@@ -87,28 +87,24 @@ body {
 }
 
 /* Line layouts */
-.line_segment_horizontal{
+.line_segment{
   margin: 0;
   padding: 0;
   position:absolute;
-  height: 5px;
-  width: 68px;
   background: rgba(21, 45, 255, 0.514);
   z-index: 1;
   user-select: none;
   pointer-events: none;
+}
+
+.line_segment_horizontal{
+  height: 5px;
+  width: 68px;
   transform: translateY(-50%);
 }
 
 .line_segment_vertical{
-  margin: 0;
-  padding: 0;
-  position:absolute;
   height: 68px;
   width: 5px;
-  background: rgba(21, 45, 255, 0.514);
-  z-index: 1;
-  user-select: none;
-  pointer-events: none;
   transform:translateX(-50%)
 }
