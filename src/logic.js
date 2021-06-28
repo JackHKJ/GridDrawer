@@ -1,7 +1,7 @@
 // This variable records the current selected parameter
 var SELECTED_ELEMENT = null
 // The mode indicator, used to change current mode
-var MODE_DICT = {
+const MODE_DICT = {
     content: "content",
     border: "border",
     line: "line",
@@ -10,9 +10,9 @@ var MODE_DICT = {
 // The default mode is 'content'
 var CURRENT_MODE = MODE_DICT.content
 // This is used for the thick_border value iteration
-var THICK_LIST = ['00', '10', '11', '01']
+const THICK_LIST = ['00', '10', '11', '01']
 // This are the available color list for the designed elements
-var COLOR_LIBRARY = {
+const COLOR_LIBRARY = {
     white: "white",
     red: "red",
     green: "lime",
@@ -23,7 +23,7 @@ var COLOR_LIBRARY = {
 }
 
 // Automatically create a reverse map for the color library        
-var REV_COLOR_LIBRARY = {}
+const REV_COLOR_LIBRARY = {}
 for (var propName in COLOR_LIBRARY) {
     var this_tag = COLOR_LIBRARY[propName]
     REV_COLOR_LIBRARY[this_tag] = propName
@@ -32,14 +32,14 @@ for (var propName in COLOR_LIBRARY) {
 
 
 // These are the colors that needs white font color
-var DARK_COLORS = ["black", "royalblue", "red", "rgb(60, 60, 60)", "rgb(170, 170, 170)"]
+const DARK_COLORS = ["black", "royalblue", "red", "rgb(60, 60, 60)", "rgb(170, 170, 170)"]
 // This is the default list for storing the src for the icons
 var ICON_SRC_LIST = ['url("$NONE$")']
 // The default color used when generating the grid
-var DEFAULT_BACKGROUD = COLOR_LIBRARY.white
+const DEFAULT_BACKGROUD = COLOR_LIBRARY.white
 
 // The dictionary for all the IDs
-var ID_DICT = {
+const ID_DICT = {
     selected_border_color: "selected_border_color",
     selected_bg_color: "selected_bg_color",
     selected_default_background: "selected_default_background",
@@ -54,7 +54,7 @@ var ID_DICT = {
     download_selector: "download_selector",
 }
 // The dictionary for all cell attributes
-var ATTR_DICT = {
+const ATTR_DICT = {
     name: "name",
     x_cord: "x_cord",
     y_cord: "y_cord",
@@ -65,7 +65,7 @@ var ATTR_DICT = {
     background_index: "background_index"
 }
 
-var CLASS_DICT = {
+const CLASS_DICT = {
     cell: "cell",
     grid_line: "grid_line",
     clear_cell: "clear_cell",
@@ -79,7 +79,7 @@ var CLASS_DICT = {
 }
 
 // The dictionary of all element that uses the color lib
-var COLOR_ID = [ID_DICT.selected_border_color, ID_DICT.selected_bg_color, ID_DICT.selected_default_background]
+const COLOR_ID = [ID_DICT.selected_border_color, ID_DICT.selected_bg_color, ID_DICT.selected_default_background]
 
 // The list of list that stores the data
 var GRID_DATA = []
@@ -90,9 +90,9 @@ var GRID_WIDTH = 0
 // The JSON for OUTPUT
 var JSON_SRC = ""
 // Load the local JSON if set to true
-var JSON_FROM_LOCAL = false
+const JSON_FROM_LOCAL = false
 
-var JSON_LOCATION_PUZZLE_OUTPUT = 'src/data.json'
+const JSON_LOCATION_PUZZLE_OUTPUT = 'src/data.json'
 // This function loads the necessary JSON file
 function load_JSON() {
 
@@ -130,7 +130,7 @@ function LOAD_COLOR_LIB() {
 
 // The output types
 
-var OUTPUT_TYPE_DICT = {
+const OUTPUT_TYPE_DICT = {
     General: "General",
     Nurikabe: "Nurikabe",
     Sudoku: "Sudoku"
@@ -486,8 +486,8 @@ function change_mode(e) {
 }
 
 // Data segment for modifying the 'border' around the cells
-var BORDER_NORMAL = '2px rgb(200, 200, 200) solid'
-var BORDER_THICK = "2px black solid"
+const BORDER_NORMAL = '2px rgb(200, 200, 200) solid'
+const BORDER_THICK = "2px black solid"
 // Modifier function that adjust the border based on the attributes
 function thick_border_modifier(target, status) {
     if (status[0] === "1") {
