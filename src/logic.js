@@ -4,6 +4,7 @@ var SELECTED_ELEMENT = null
 var MODE_DICT = {
     content: "content",
     border: "border",
+    line: "line",
     image: "image"
 }
 // The default mode is 'content'
@@ -49,7 +50,8 @@ var ID_DICT = {
     selected_name: "selected_name",
     selected_text: "selected_text",
     mode_name: "mode_name",
-    img: 'img'
+    img: 'img',
+    download_selector: "download_selector",
 }
 // The dictionary for all cell attributes
 var ATTR_DICT = {
@@ -71,7 +73,9 @@ var CLASS_DICT = {
     clear_cell_modifier_width: "clear_cell_modifier_width",
     clear_cell_modifier_height: "clear_cell_modifier_height",
     grid_cell_modifier_right: "grid_cell_modifier_right",
-    grid_cell_modifier_down: "grid_cell_modifier_down"
+    grid_cell_modifier_down: "grid_cell_modifier_down",
+    line_segment_vertical: "line_segment_vertical",
+    line_segment_horizontal: "line_segment_horizontal"
 }
 
 // The dictionary of all element that uses the color lib
@@ -79,6 +83,7 @@ var COLOR_ID = [ID_DICT.selected_border_color, ID_DICT.selected_bg_color, ID_DIC
 
 // The list of list that stores the data
 var GRID_DATA = []
+var GRID_DICT = []
 var GRID_HEIGHT = 0
 var GRID_WIDTH = 0
 
@@ -132,7 +137,7 @@ var OUTPUT_TYPE_DICT = {
 }
 
 function LOAD_OUTPUT_TYPE() {
-    var this_element = document.getElementById("download_selector")
+    var this_element = document.getElementById(ID_DICT.download_selector)
     this_element.innerHTML = ''
     for (const [key, value] of Object.entries(OUTPUT_TYPE_DICT)) {
         this_element.innerHTML += '<option value="' + value + '">' + key + '</option>'
@@ -169,6 +174,7 @@ function create_grid() {
     }
     var grid = document.getElementById(ID_DICT.grid_section)
     grid.innerHTML = "" // clean the current part
+    GRID_DICT = {}
 
     for (let i = 0; i < size + 2; i++) {
         var this_line = document.createElement('div')
@@ -224,7 +230,12 @@ function create_grid() {
             }
 
             this_element.classList.add(CLASS_DICT.cell)
-            this_element.innerText = ''
+            this_element.textContent = ''
+            GRID_DICT[this_element.getAttribute(ATTR_DICT.name)] = this_element
+            var this_text = document.createElement("p")
+            this_text.className = "cell_text"
+            this_element.appendChild(this_text)
+
 
             this_line.appendChild(this_element)
         }
@@ -249,8 +260,10 @@ function create_grid() {
 function select(e) {
     // modify_selected()
     SELECTED_ELEMENT = e
+    // Update the selected name
     document.getElementById(ID_DICT.selected_name).textContent = e.getAttribute(ATTR_DICT.name)
 
+    // Update the border/background color of the selected element to the display
     sel = document.getElementById(ID_DICT.selected_border_color)
     var options = Array.from(sel.options);
     // console.log(options)
@@ -268,8 +281,9 @@ function select(e) {
     });
 
     let selected_text = document.getElementById(ID_DICT.selected_text)
-    selected_text.value = e.innerText
-    selected_text.focus(function () { this.select() })
+    selected_text.value = e.querySelector(".cell_text").textContent
+    // selected_text.focus(function () { this.select() })
+    selected_text.select()
 
     modify_selected()
 }
@@ -280,7 +294,8 @@ function modify_selected(e) {
         return
     }
     // Update the text value 
-    SELECTED_ELEMENT.innerText = document.getElementById(ID_DICT.selected_text).value
+    SELECTED_ELEMENT.querySelector(".cell_text").textContent = document.getElementById(ID_DICT.selected_text).value
+
     GRID_DATA[SELECTED_ELEMENT.getAttribute(ATTR_DICT.x_cord)][SELECTED_ELEMENT.getAttribute(ATTR_DICT.y_cord)] = document.getElementById(ID_DICT.selected_text).value
     // console.log(GRID_DATA)
     // Update the border color
@@ -596,7 +611,7 @@ function output_by_type() {
 
     // console.log(JSONfn.stringify())
 
-    var this_type = document.getElementById("download_selector").value + ""
+    var this_type = document.getElementById(ID_DICT.download_selector).value + ""
     // console.log(this_type)
     var str = "" + JSON_SRC[this_type]['function']
     // console.log(str)
@@ -610,8 +625,10 @@ function output_by_type() {
 
 }
 
-// Click and toggle functionalities
+// Click and toggle functionalities, record a list of element that cursur passed in TARGET_LIST
+// The element passed by cursor
 var TARGET_LIST = []
+// The coordinates, or "name" attribute of a cell
 var COORD_LIST = []
 var MOUSE_DOWN_FLAG = false
 
@@ -646,15 +663,14 @@ onmouseup = function (e) {
     // console.log("mouse location:", e.clientX, e.clientY)
     MOUSE_DOWN_FLAG = false
     // console.log(TARGET_LIST)
+    for (item of TARGET_LIST) {
+        COORD_LIST.push(item.getAttribute(ATTR_DICT.name))
+    }
 
+
+    // Under border mode, user can press and drag the left mouse key to create border,
+    // press and drag the right mouse key to clear the created border
     if (CURRENT_MODE == MODE_DICT.border) {
-        for (item of TARGET_LIST) {
-            // let x = parseInt(item.getAttribute(ATTR_DICT.x_cord))
-            // let y = parseInt(item.getAttribute(ATTR_DICT.y_cord))
-            // // COORD_LIST.push("("+x+","+y+")")
-            // COORD_LIST.push([x,y])
-            COORD_LIST.push(item.getAttribute(ATTR_DICT.name))
-        }
 
         console.log(COORD_LIST)
         // A left click, toggle the borders
@@ -711,4 +727,26 @@ onmouseup = function (e) {
             select(e.target)
         }
     }
+}
+
+function get_offset(e) {
+    var rect = e.getBoundingClientRect();
+    return {
+        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY
+    }
+}
+function set_offset_line(line, ID) {
+    line.style.left = (get_offset(GRID_DICT[ID]).left + 32) + "px"
+    line.style.top = (get_offset(GRID_DICT[ID]).top + 32) + "px"
+}
+
+
+function add_line() {
+    console.log(GRID_DICT['1-1'])
+    var line_seg = document.createElement("div")
+    line_seg.className = "line_segment_vertical"
+    line_seg.style.left = (get_offset(GRID_DICT['1-1']).left + 32) + "px"
+    line_seg.style.top = (get_offset(GRID_DICT['1-1']).top + 32) + "px"
+    GRID_DICT["1-1"].appendChild(line_seg)
 }
