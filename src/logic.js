@@ -22,6 +22,12 @@ const COLOR_LIBRARY = {
     blue: "royalblue"
 }
 
+const COLOR_LIBRARY_LINE = {
+    blue:"rgba(21, 45, 255, 0.514)",
+    red:"rgba(192, 14, 14, 0.514)",    
+    green:"rgba(12, 211, 95, 0.514)"
+}
+
 // Automatically create a reverse map for the color library        
 const REV_COLOR_LIBRARY = {}
 for (var propName in COLOR_LIBRARY) {
@@ -43,6 +49,7 @@ const ID_DICT = {
     selected_border_color: "selected_border_color",
     selected_bg_color: "selected_bg_color",
     selected_default_background: "selected_default_background",
+    selected_line_color:"selected_line_color",
     console: "console",
     grid_size_input: "grid_size_input",
     grid_size_input_support: "grid_size_input_support",
@@ -76,7 +83,8 @@ const CLASS_DICT = {
     grid_cell_modifier_down: "grid_cell_modifier_down",
     line_segment: "line_segment",
     line_segment_vertical: "line_segment_vertical",
-    line_segment_horizontal: "line_segment_horizontal"
+    line_segment_horizontal: "line_segment_horizontal",
+    hidden:"hidden"
 }
 
 // The dictionary of all element that uses the color lib
@@ -127,12 +135,17 @@ function load_JSON() {
 function LOAD_COLOR_LIB() {
     // Add the color library to the dropdown list
 
-    for (var this_id of COLOR_ID) {
-        var this_element = document.getElementById(this_id)
+    for (let this_id of COLOR_ID) {
+        let this_element = document.getElementById(this_id)
         this_element.innerHTML = ''
         for (const [key, value] of Object.entries(COLOR_LIBRARY)) {
             this_element.innerHTML += '<option value="' + value + '">' + key + '</option>'
         }
+    }
+    let this_element = document.getElementById(ID_DICT.selected_line_color)
+        this_element.innerHTML = ''
+    for (const [key, value] of Object.entries(COLOR_LIBRARY_LINE)) {
+        this_element.innerHTML += '<option value="' + value + '">' + key + '</option>'
     }
 }
 
@@ -487,8 +500,6 @@ function scroll_handler(e) {
 
 }
 
-// Function that iteratively switch the mode 
-// Mode: content/border/image
 
 // const MODE_DICT = {
 //     content: "content",
@@ -497,6 +508,8 @@ function scroll_handler(e) {
 //     image: "image"
 // }
 
+// Function that iteratively switch the mode 
+// Mode: content/border/line/image
 function change_mode(e) {
     // Change the mode variable and the displayed name
     let mode_list = Object.keys(MODE_DICT)
@@ -505,8 +518,23 @@ function change_mode(e) {
     CURRENT_MODE = MODE_DICT[mode_list[index]]
     document.getElementById(ID_DICT.mode_name).textContent = CURRENT_MODE
     // Change the displayed elements
+    change_mode_visibility()
 }
 
+function change_mode_visibility() {
+    let mode_list = Object.keys(MODE_DICT)
+    for (let this_mode of mode_list) {
+        let this_selector = "." + this_mode + "_mode"
+        console.log(this_selector)
+        let selected = document.querySelector(this_selector)
+        if (CURRENT_MODE != this_mode && selected != null) {
+            document.querySelector(this_selector).classList.add(CLASS_DICT.hidden)
+        }
+        else if (CURRENT_MODE == this_mode && selected != null) {
+            document.querySelector(this_selector).classList.remove(CLASS_DICT.hidden)
+        }
+    }
+}
 
 
 // Data segment for modifying the 'border' around the cells
@@ -765,6 +793,8 @@ onmouseup = function (e) {
                 let tie_breaker_result = line_tie_breaker(element_1, element_2)
                 // tie_breaker_result format: element, namestr, orientation
                 // console.log(tie_breaker_result)
+
+                // No line exist, creating a new line
                 if (tie_breaker_result != undefined && !(tie_breaker_result[1] in GRID_LINE_DICT)) {
                     let line_seg = document.createElement("div")
                     line_seg.classList.add(CLASS_DICT.line_segment)
@@ -776,15 +806,23 @@ onmouseup = function (e) {
                     }
                     line_seg.style.left = (get_offset(tie_breaker_result[0]).left + 32) + "px"
                     line_seg.style.top = (get_offset(tie_breaker_result[0]).top + 32) + "px"
+
+                    line_seg.style.background = document.getElementById(ID_DICT.selected_line_color).value
+
                     // Give id to this specific element for search
                     line_seg.id = line_tie_breaker[1]
                     tie_breaker_result[0].appendChild(line_seg)
                     GRID_LINE_DICT[tie_breaker_result[1]] = line_seg
                 }
+
+                // If line exist, update the color if necessary
+                if (tie_breaker_result != undefined && (tie_breaker_result[1] in GRID_LINE_DICT)) {
+                    GRID_LINE_DICT[tie_breaker_result[1]].style.background = document.getElementById(ID_DICT.selected_line_color).value
+                }
             }
         }
         // right key for cleaning the lines
-        if(e.button == 2){
+        if (e.button == 2) {
             for (let i = 0; i < TARGET_LIST.length - 1; i++) {
                 let element_1 = TARGET_LIST[i]
                 let element_2 = TARGET_LIST[i + 1]
@@ -800,8 +838,8 @@ onmouseup = function (e) {
             }
 
         }
-        
-        
+
+
     }
 }
 

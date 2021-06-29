@@ -30,7 +30,7 @@
         </div>
 
 
-        <!-- Setter for the width of the grid -->
+        <!-- Setter for the height and width of the grid -->
         <div class="grid_creator">
             <span>Enter the size of the grid:</span><br>
             Row: <input type="text" id="grid_size_input" style="width: 40px;">
@@ -53,35 +53,49 @@
             <!-- Current mode hint -->
             <p>Mode: <span id="mode_name">content</span><input type="button" value="Switch!" id="mode_btn"
                     onclick="change_mode()"></p>
+
             <!-- Cell properties -->
-            <p>
+            <div class="content_mode">
                 Border:
                 <select id="selected_border_color"></select>
                 Background:
                 <select id="selected_bg_color"></select>
-            </p>
-            </p>
-            <!-- Text input -->
-            <p>Text: <input type="text" id="selected_text" onfocus="this.select()" onchange="modify_selected()"></p>
-            <!-- Btn panel -->
-            <input type="button" value="Modify!" id="modify_btn" onclick="modify_selected()">
-            <input type="button" value="ScreenShot!" id="screenshot_btn" onclick="Save_screen_shot()">
-            <br>
+
+            
+                <!-- Text input -->
+                <p>Text: <input type="text" id="selected_text" onfocus="this.select()" onchange="modify_selected()" style="width: 40px;"></p>
+                <!-- Btn panel -->
+                <input type="button" value="Modify!" id="modify_btn" onclick="modify_selected()">
+                <br>
+            </div>    
+
+            <div class="line_mode hidden">
+                Line color:
+                <select id="selected_line_color"></select>
+            </div>
+            
             <!-- Icon upload panel -->
-            Upload Icon Image:
-            <br>
-            <input type="file" id="img" name="img" accept="image/*">
-            <input type="button" value="Upload!" id="upload_btn" onclick="upload()">
-            <p id="console"></p>
+            <div class="image_mode hidden">
+                Upload Icon Image:
+                <br>
+                <input type="file" id="img" name="img" accept="image/*">
+                <input type="button" value="Upload!" id="upload_btn" onclick="upload()">
+                <p id="console"></p>
+            </div>
+        
+
         </div>
 
+        <!-- The download section -->
         <div class="download_section">
+            ScreenShot to clipboard
+            <input type="button" value="ScreenShot!" id="screenshot_btn" onclick="Save_screen_shot()"><br>
             Download as:
             <select id="download_selector"></select>
             <input type="button" value="Download!" id="download_btn" onclick="output_by_type()">
         </div>
 
-        <!-- <input type="button" value="Add line!" id="line_btn" onclick="add_line()"> -->
+        
 
     </body>
 
