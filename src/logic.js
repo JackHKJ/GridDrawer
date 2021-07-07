@@ -665,14 +665,21 @@ function output_by_type() {
 
     // console.log(JSONfn.stringify())
 
-    var this_type = document.getElementById(ID_DICT.download_selector).value + ""
-    // console.log(this_type)
-    var str = "" + JSON_SRC[this_type]['function']
-    // console.log(str)
-    var method = JSONfn.parse(JSONfn.stringify(str))
-    var output = method()
-    console.log("OUTPUT is:" + output)
+    let this_type = document.getElementById(ID_DICT.download_selector).value + ""
 
+    let func_str = ""
+    if (!JSON_SRC[this_type]['useStandard']) {
+        func_str = "" + JSON_SRC[this_type]['function']
+    }
+    else {
+        func_str = "" + JSON_SRC["General"]['function']
+    }
+    var method = JSONfn.parse(JSONfn.stringify(func_str))
+    var output = method() + ""    
+    output = output.replace("$PUZZLENAME$", JSON_SRC[this_type]['XMLName']) 
+
+    console.log("OUTPUT is:" + output)
+    // Output if content getched
     if (output != undefined) {
         export_to_TXT(output, this_type)
     }
