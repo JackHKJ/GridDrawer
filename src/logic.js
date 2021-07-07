@@ -126,9 +126,6 @@ function load_JSON() {
             JSON_SRC = data
         })
     }
-
-
-
 }
 
 // END OF DATA SEGMENT /////////////////////////////////////////////////////////////////////////////////////
@@ -156,8 +153,11 @@ const OUTPUT_TYPE_DICT = {
     General: "General",
     Nurikabe: "Nurikabe",
     Sudoku: "Sudoku",
-    Fillapix: "Fillapix"
+    Fillapix: "Fillapix",
+    LightUp:"LightUp",
+    Masyu:"Masyu"
 }
+
 
 function LOAD_OUTPUT_TYPE() {
     var this_element = document.getElementById(ID_DICT.download_selector)
@@ -170,9 +170,9 @@ function LOAD_OUTPUT_TYPE() {
 
 // Functions that is activated after page load
 window.addEventListener('load', function () {
-    LOAD_COLOR_LIB()
-    LOAD_OUTPUT_TYPE()
     load_JSON()
+    LOAD_COLOR_LIB()        
+    LOAD_OUTPUT_TYPE()
 })
 
 // END OF Initializers /////////////////////////////////////////////////////////////////////////////////////  
