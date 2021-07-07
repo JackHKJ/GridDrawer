@@ -23,9 +23,9 @@ const COLOR_LIBRARY = {
 }
 
 const COLOR_LIBRARY_LINE = {
-    blue:"rgba(21, 45, 255, 0.514)",
-    red:"rgba(192, 14, 14, 0.514)",    
-    green:"rgba(12, 211, 95, 0.514)"
+    blue: "rgba(21, 45, 255, 0.514)",
+    red: "rgba(192, 14, 14, 0.514)",
+    green: "rgba(12, 211, 95, 0.514)"
 }
 
 // Automatically create a reverse map for the color library        
@@ -49,7 +49,7 @@ const ID_DICT = {
     selected_border_color: "selected_border_color",
     selected_bg_color: "selected_bg_color",
     selected_default_background: "selected_default_background",
-    selected_line_color:"selected_line_color",
+    selected_line_color: "selected_line_color",
     console: "console",
     grid_size_input: "grid_size_input",
     grid_size_input_support: "grid_size_input_support",
@@ -72,6 +72,7 @@ const ATTR_DICT = {
     background_index: "background_index"
 }
 
+// Dictionary for all existing classes
 const CLASS_DICT = {
     cell: "cell",
     grid_line: "grid_line",
@@ -84,7 +85,7 @@ const CLASS_DICT = {
     line_segment: "line_segment",
     line_segment_vertical: "line_segment_vertical",
     line_segment_horizontal: "line_segment_horizontal",
-    hidden:"hidden"
+    hidden: "hidden"
 }
 
 // The dictionary of all element that uses the color lib
@@ -106,7 +107,7 @@ var GRID_LINE_DICT = {}
 // The JSON for OUTPUT
 var JSON_SRC = ""
 // Load the local JSON if set to true
-const JSON_FROM_LOCAL = false
+const JSON_FROM_LOCAL = true
 
 const JSON_LOCATION_PUZZLE_OUTPUT = 'src/data.json'
 // This function loads the necessary JSON file
@@ -143,7 +144,7 @@ function LOAD_COLOR_LIB() {
         }
     }
     let this_element = document.getElementById(ID_DICT.selected_line_color)
-        this_element.innerHTML = ''
+    this_element.innerHTML = ''
     for (const [key, value] of Object.entries(COLOR_LIBRARY_LINE)) {
         this_element.innerHTML += '<option value="' + value + '">' + key + '</option>'
     }
@@ -154,7 +155,8 @@ function LOAD_COLOR_LIB() {
 const OUTPUT_TYPE_DICT = {
     General: "General",
     Nurikabe: "Nurikabe",
-    Sudoku: "Sudoku"
+    Sudoku: "Sudoku",
+    Fillapix: "Fillapix"
 }
 
 function LOAD_OUTPUT_TYPE() {
