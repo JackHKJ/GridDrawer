@@ -156,7 +156,7 @@ const OUTPUT_TYPE_DICT = {
     Fillapix: "Fillapix",
     LightUp: "LightUp",
     Masyu: "Masyu",
-    TreeTent:"TreeTent"
+    TreeTent: "TreeTent",
     BattleShip: "BattleShip"
 }
 
