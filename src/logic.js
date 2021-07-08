@@ -107,7 +107,7 @@ var GRID_LINE_DICT = {}
 // The JSON for OUTPUT
 var JSON_SRC = ""
 // Load the local JSON if set to true
-const JSON_FROM_LOCAL = true
+const JSON_FROM_LOCAL = false
 
 const JSON_LOCATION_PUZZLE_OUTPUT = 'src/data.json'
 // This function loads the necessary JSON file
@@ -154,8 +154,9 @@ const OUTPUT_TYPE_DICT = {
     Nurikabe: "Nurikabe",
     Sudoku: "Sudoku",
     Fillapix: "Fillapix",
-    LightUp:"LightUp",
-    Masyu:"Masyu"
+    LightUp: "LightUp",
+    Masyu: "Masyu",
+    TreeTent:"TreeTent"
 }
 
 
@@ -171,7 +172,7 @@ function LOAD_OUTPUT_TYPE() {
 // Functions that is activated after page load
 window.addEventListener('load', function () {
     load_JSON()
-    LOAD_COLOR_LIB()        
+    LOAD_COLOR_LIB()
     LOAD_OUTPUT_TYPE()
 })
 
@@ -661,6 +662,64 @@ function export_to_TXT(content, filename, ending = "") {
 
 // }
 
+// function GeneralWithBorderLabel_output(e) {
+//     let template = '' + JSON_SRC['GeneralWithBorderLabel']['template']
+//     template = template.replace('$HEIGHT$', GRID_HEIGHT)
+//     template = template.replace('$WIDTH$', GRID_WIDTH)
+//     let content = ''
+//     let cell = '' + JSON_SRC['GeneralWithBorderLabel']['cell']
+//     let clue = '' + JSON_SRC['GeneralWithBorderLabel']['clue']
+
+//     // Replacing the content of the grid
+//     let flag = false
+//     for (let i = 0; i < GRID_HEIGHT; i++) {
+//         for (let j = 0; j < GRID_WIDTH; j++) {
+//             if (GRID_DATA[i + 1][j + 1] != '') {
+//                 let thisline = cell.replace('$VALUE$', GRID_DATA[i + 1][j + 1]).replace('$X$', i).replace('$Y$', j)
+//                 content += thisline
+//                 flag = true
+//             }
+//         }
+//     }
+//     template = template.replace('$CONTENT$', content)
+//     if (!flag) {
+//         console.log("Nothing to output! Empty board.")
+//         return undefined
+//     }
+//     // The east axis
+//     let east_axis = ''
+//     for (let i = 0; i < GRID_HEIGHT; i++) {
+//         if (GRID_DATA[i + 1][0] == '' || GRID_DATA[i + 1][GRID_WIDTH + 1] == '') {
+//             console.log("Missing east axis value pair, at column" + (i + 1))
+//             console.log(GRID_DATA[i + 1][0])
+//             console.log(GRID_DATA[i + 1][GRID_WIDTH + 1])
+//             return undefined
+//         }
+//         let this_line = clue.replace('$INDEX$', GRID_DATA[i + 1][0]).replace('$VALUE$', GRID_DATA[i + 1][GRID_WIDTH + 1])
+//         east_axis += this_line
+//     }
+//     template = template.replace('$AXISEAST$', east_axis)
+//     let south_axis = ''
+//     for (let j = 0; j < GRID_WIDTH; j++) {
+//         if (GRID_DATA[0][j + 1] == '' || GRID_DATA[GRID_HEIGHT][j + 1] == '') {
+//             console.log("Missing south axis value pair, at row" + (j + 1))
+//             console.log(GRID_DATA[0][j + 1])
+//             console.log(GRID_DATA[GRID_HEIGHT + 1][j + 1])
+//             return undefined
+//         }
+//         let this_line = clue.replace('$INDEX$', GRID_DATA[0][j + 1]).replace('$VALUE$', GRID_DATA[GRID_HEIGHT + 1][j + 1])
+//         south_axis += this_line
+//     }
+//     template = template.replace('$AXISSOUTH$', south_axis)
+//     return template
+// }
+
+// function test() {
+//     console.log(GeneralWithBorderLabel_output())
+//     console.log(JSONfn.stringify(GeneralWithBorderLabel_output))
+// }
+
+
 function output_by_type() {
 
     // console.log(JSONfn.stringify())
@@ -668,15 +727,18 @@ function output_by_type() {
     let this_type = document.getElementById(ID_DICT.download_selector).value + ""
 
     let func_str = ""
-    if (!JSON_SRC[this_type]['useStandard']) {
-        func_str = "" + JSON_SRC[this_type]['function']
-    }
-    else {
+    if (JSON_SRC[this_type]['useStandard'] == "General") {
         func_str = "" + JSON_SRC["General"]['function']
     }
+    else if (JSON_SRC[this_type]['useStandard'] == "GeneralWithBorderLabel"){
+        func_str = "" + JSON_SRC["GeneralWithBorderLabel"]['function']
+    }
+    else {
+        func_str = "" + JSON_SRC[this_type]['function']
+    }
     var method = JSONfn.parse(JSONfn.stringify(func_str))
-    var output = method() + ""    
-    output = output.replace("$PUZZLENAME$", JSON_SRC[this_type]['XMLName']) 
+    var output = method() + ""
+    output = output.replace("$PUZZLENAME$", JSON_SRC[this_type]['XMLName'])
 
     console.log("OUTPUT is:" + output)
     // Output if content getched
